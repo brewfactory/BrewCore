@@ -4,12 +4,11 @@
  * @module Log
  **/
 
-'use strict';
+var mongoose = require('mongoose');
+var Schema = mongoose.Schema;
+var LogSchema;
+var LogModel;
 
-var
-  mongoose = require('mongoose'),
-  Schema = mongoose.Schema,
-  LogSchema;
 
 LogSchema = new Schema({
 
@@ -31,6 +30,7 @@ LogSchema = new Schema({
   add: {}
 });
 
+
 /**
  * Find previous brews
  *
@@ -38,7 +38,7 @@ LogSchema = new Schema({
  * @param {Function} callback
  */
 LogSchema.statics.findBrews = function (callback) {
-  this.aggregate({
+  LogModel.aggregate({
     $match: {
       'date': {
         '$ne': null
@@ -58,50 +58,44 @@ LogSchema.statics.findBrews = function (callback) {
       to: '$to'
     }
   }, function (err, logs) {
-
-    var
-      response = [],
-      i;
-
-    // err
-    if (err) {
+    if(err) {
       return callback(err);
     }
 
-    for (i in logs) {
-      response.push({
-        name: logs[i]._id.name,
-        from: logs[i].from,
-        to: logs[i].to
-      });
-    }
+    logs = logs.map(function (log) {
+      return {
+        name: log._id.name,
+        from: log.from,
+        to: log.to
+      };
+    });
 
-    return callback(null, response);
+    return callback(null, logs);
   });
 };
+
 
 /**
  * Find one brew
  *
  * @method findBrews
- * @param {Object} brew
+ * @param {Object} params
  * @param {Function} callback
  */
-LogSchema.statics.findOneBrew = function (brew, callback) {
-  brew.from = new Date(brew.from);
-  brew.to = new Date(brew.to);
+LogSchema.statics.findOneBrew = function (params, callback) {
+//  params.from = new Date(params.from);
+//  params.to = new Date(params.to);
 
-  this.where('level', 'status')
-    .where('add.name', brew.name)
+  return this.where('level', 'status')
+    .where('add.name', params.name)
     .where('date')
-    .gte(brew.from)
-    .lte(brew.to)
+    .gte(params.from)
+    .lte(params.to)
     .select('add.temp add.pwm date')
     .sort('date')
     .exec(callback);
 };
 
 
-
 // model
-module.exports = mongoose.model('Log', LogSchema);
+module.exports = LogModel = mongoose.model('Log', LogSchema);

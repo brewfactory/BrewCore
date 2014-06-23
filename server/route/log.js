@@ -4,28 +4,38 @@
  * @module routing
  **/
 
-'use strict';
+var thunkify = require('co-thunkify');
 
+var Logger = require('../module/Logger');
+var LOG = 'log-router';
+
+var Log = require('../../schema/Log');
+
+var findBrews = thunkify(Log.findBrews);
 
 
 /**
  * Find brew logs
  *
  * @method findBrewLogs
- * @param {Object} req Express Object
- * @param {Object} res Express Object
- * @param {Function} next Express Function
+ * @param {Function} next
  */
-module.exports.findBrewLogs = function (LogModel, req, res, next) {
-  LogModel.findBrews(function (err, result) {
+exports.findBrewLogs = function *(next) {
+  var brews;
 
-    // err
-    if (err) {
-      return next(err);
-    }
+  // Query database
+  try {
+    brews = yield findBrews();
+  } catch (err) {
+    Logger.error('find: DB error', LOG, { err: err });
+    this.throw(500, 'DB error');
+  }
 
-    res.json(result);
-  });
+  // Res
+  yield next;
+  this.body = {
+    brews: brews
+  };
 };
 
 
@@ -33,25 +43,32 @@ module.exports.findBrewLogs = function (LogModel, req, res, next) {
  * Find one brew log
  *
  * @method findBrewLogs
- * @param {Object} req Express Object
- * @param {Object} res Express Object
- * @param {Function} next Express Function
+ * @param {Function} next
  */
-module.exports.findOneBrewLog = function (LogModel, req, res, next) {
-  var brew = req.param('brew');
+module.exports.findOneBrewLog = function *(next) {
+  var params = {
+    name: this.query.name,
+    from: this.query.from,
+    to: this.query.to
+  };
 
-  // err: brew
-  if (!brew) {
-    return next(new Error('Undefined brew'));
+  var brews;
+
+  if(!params.name || !params.from || !params.to) {
+    this.throw(400, 'Invalid query');
   }
 
-  LogModel.findOneBrew(brew, function (err, result) {
+  // Query database
+  try {
+    brews = yield Log.findOneBrew(params);
+  } catch (err) {
+    Logger.error('find: DB error', LOG, { err: err });
+    this.throw(500, 'DB error');
+  }
 
-    // err
-    if (err) {
-      return next(err);
-    }
-
-    res.json(result);
-  });
+  // Res
+  yield next;
+  this.body = {
+    brews: brews
+  };
 };

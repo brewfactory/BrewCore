@@ -4,7 +4,7 @@
  * @module Socket
  */
 
-var Logger = require('./../../core/module/Logger');
+var Logger = require('./Logger');
 var io;
 
 

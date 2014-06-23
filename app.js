@@ -16,13 +16,14 @@ var mongoose = require('mongoose');
 
 var path = require('path');
 
-var Logger = require('./core/module/Logger');
+var Logger = require('./server/module/Logger');
 var Socket = require('./server/module/Socket');
 var app = koa();
 
 var io;
 
 // Routers
+var log = require('./server/route/log');
 
 var server;
 var PORT;
@@ -63,6 +64,11 @@ app.get('/api', function *(next) {
   yield next;
   this.body = { name: pkg.name, version: pkg.version };
 });
+
+
+// logs
+app.get('/api/logs/brews', log.findBrewLogs);
+app.get('/api/logs', log.findOneBrewLog);
 
 
 /**
