@@ -1,63 +1,66 @@
 /**
- * Provides routing for the express application
+ * Brew routing
  *
- * @module routing
+ * @routing brew
  **/
 
 var Brewer = require('../../core/brewer');
 
 
 /**
- * Set Brew
+ * Set
  *
- * @method setPWM
- * @param {Object} req Express Object
- * @param {Object} res Express Object
+ * @method set
+ * @param {Function} next
  */
-exports.setBrew = function (req, res) {
-  var name = req.param('name') || '';
-  var startTime = req.param('startTime') || new Date();
-  var phases = req.param('phases') || [];
+exports.set = function *(next) {
+  var body = this.request.body;
+
+  var name = body.name || '';
+  var startTime = body.startTime || new Date();
+  var phases = body.phases || [];
 
   // Set new Brew
   Brewer.setBrew(name, phases, startTime);
 
-  res.json({
+  // Res
+  yield next;
+  this.body = {
     status: 'ok'
-  });
+  };
 };
 
 
 /**
- * Stop Brew
+ * Stop
  *
- * @method stopBrew
- * @param {Object} req Express Object
- * @param {Object} res Express Object
+ * @method stop
+ * @param {Function} next
  */
-exports.cancelBrew = function (req, res) {
+exports.stop = function *(next) {
   Brewer.cancelBrew();
 
-  res.json({
+  // Res
+  yield next;
+  this.body = {
     status: 'ok'
-  });
+  };
 };
 
 
 /**
- * Pause Brew
+ * Pause
  *
- * @method pauseBrew
- * @param {Object} req Express Object
- * @param {Object} res Express Object
+ * @method pause
+ * @param {Function} next
  */
-exports.pauseBrew = function (req, res) {
+exports.pause = function *(next) {
   var paused = Brewer.setPaused();
 
-  Brewer.emitBrewChanged();
-
-  res.json({
+  // Res
+  yield next;
+  this.body = {
     status: 'ok',
     paused: paused
-  });
+  };
 };

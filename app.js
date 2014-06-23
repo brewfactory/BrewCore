@@ -4,12 +4,15 @@
  * @module app
  **/
 
+  'use strict';
+
 var pkg = require('./package.json');
 
 var koa = require('koa');
 var serve = require('koa-static');
 var router = require('koa-router');
 var etag = require('koa-etag');
+var body = require('koa-parse-json');
 
 var nconf = require('nconf');
 var mongoose = require('mongoose');
@@ -21,9 +24,6 @@ var Socket = require('./server/module/Socket');
 var app = koa();
 
 var io;
-
-// Routers
-var log = require('./server/route/log');
 
 var server;
 var PORT;
@@ -50,6 +50,7 @@ PORT = process.env.PORT || nconf.get('port');
 
 require('koa-qs')(app);
 app.use(etag());
+app.use(body());
 app.use(router(app));
 
 Logger.init();
@@ -60,15 +61,26 @@ app.use(serve(process.env.CLIENT_DIR || nconf.get('client')));
  * Router
  */
 
-app.get('/api', function *(next) {
-  yield next;
-  this.body = { name: pkg.name, version: pkg.version };
-});
+{
+
+  let brew = require('./server/route/brew');
+  let log = require('./server/route/log');
+
+  app.get('/api', function *(next) {
+    yield next;
+    this.body = { name: pkg.name, version: pkg.version };
+  });
+
+  app.post('/brew', brew.set);
+  app.get('/brew/stop', brew.stop);
+  app.get('/brew/pause', brew.pause);
 
 
 // logs
-app.get('/api/logs/brews', log.findBrewLogs);
-app.get('/api/logs', log.findOneBrewLog);
+  app.get('/api/logs/brews', log.findBrew);
+  app.get('/api/logs', log.find);
+
+}
 
 
 /**

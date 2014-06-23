@@ -1,7 +1,7 @@
 /**
- * Provides routing for the express application
+ * Log routing
  *
- * @module routing
+ * @routing log
  **/
 
 var thunkify = require('co-thunkify');
@@ -15,12 +15,12 @@ var findBrews = thunkify(Log.findBrews);
 
 
 /**
- * Find brew logs
+ * Find brew
  *
- * @method findBrewLogs
+ * @method findBrew
  * @param {Function} next
  */
-exports.findBrewLogs = function *(next) {
+exports.findBrew = function *(next) {
   var brews;
 
   // Query database
@@ -40,12 +40,12 @@ exports.findBrewLogs = function *(next) {
 
 
 /**
- * Find one brew log
+ * Find
  *
- * @method findBrewLogs
+ * @method find
  * @param {Function} next
  */
-module.exports.findOneBrewLog = function *(next) {
+module.exports.find = function *(next) {
   var params = {
     name: this.query.name,
     from: this.query.from,

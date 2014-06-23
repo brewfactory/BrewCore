@@ -5,21 +5,18 @@
  */
 
 
-exports.brewer = {
-  brewChanged: function (brew) {
+exports.brewer = {};
 
-  },
+exports.brewer.brewChanged = function (brew) {
+};
 
-  ended: function () {
+exports.brewer.ended = function () {
+};
 
-  },
 
-  // Pause
-  statusChanged: function (status) {
+// pause
+exports.brewer.statusChanged = function (status) {
+};
 
-  },
-
-  phaseChanged: function (phase) {
-
-  }
+exports.brewer.phaseChanged = function (phase) {
 };

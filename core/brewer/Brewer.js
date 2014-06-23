@@ -216,6 +216,9 @@ exports.setPaused = function () {
     }
   }
 
+  // Emit brew changed
+  brewChanged();
+
   return _actualBrew.paused;
 };
 

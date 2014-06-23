@@ -5,6 +5,7 @@
 
 var Event = require('./Event');
 
+exports.brewer = {};
 
 exports.brewer.brewChanged = Event.brewer.brewChanged;
 exports.brewer.ended = Event.brewer.ended;

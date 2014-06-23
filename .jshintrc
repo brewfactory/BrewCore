@@ -18,7 +18,7 @@
   "trailing": true,
   "smarttabs": true,
   "globals": {
-    "ssp": true,
+    "angular": false,
     "describe": false,
     "expect": false,
     "before": false,

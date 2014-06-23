@@ -1,4 +1,8 @@
-/* globals angular */
+/*
+ * Log controller
+ *
+ * @controller LogCtrl
+ */
 
 'use strict';
 
