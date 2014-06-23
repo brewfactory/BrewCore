@@ -1,3 +1,5 @@
+/* globals angular */
+
 'use strict';
 
 angular.module('brewpiApp')
@@ -5,11 +7,13 @@ angular.module('brewpiApp')
     var findBrew;
 
     $scope.options = {};
+
     $scope.options.temp = {
       pointDot: true,
       bezierCurve: false,
       scaleLabel: '<%=value%>°'
     };
+
     $scope.options.pwm = {
       pointDot: true,
       bezierCurve: false,
@@ -54,8 +58,8 @@ angular.module('brewpiApp')
     };
 
     // brews
-    LogService.findBrews(function findBrews(brews) {
-      $scope.brews = brews;
+    LogService.findBrews(function findBrews(resp) {
+      $scope.brews = resp.brews;
 
       if ($scope.brews[0]) {
         $scope.brew = $scope.brews[0];
@@ -69,16 +73,24 @@ angular.module('brewpiApp')
     });
 
 
-    // find brew
+    /*
+     * Find brew
+     *
+     * @method findBrew
+     */
     findBrew = function findBrew() {
-      LogService.find({ brew: $scope.brew }, function find(response) {
-        var i = 0,
-          skip,
-          dateLabel,
-          min = {},
-          max = {};
+      LogService.find({
+        name: $scope.brew.name,
+        from: $scope.brew.from,
+        to: $scope.brew.to
+      }, function find(resp) {
+        var brews = resp.brews;
+        var skip;
+        var dateLabel;
+        var min = {};
+        var max = {};
 
-        skip = Math.floor(response.length / 18) + 1;
+        skip = Math.floor(brews.length / 18) + 1;
 
         // clear previous
         $scope.chart.temp.labels = [];
@@ -87,14 +99,14 @@ angular.module('brewpiApp')
         $scope.chart.pwm.labels = [];
         $scope.chart.pwm.datasets[0].data = [];
 
-        angular.forEach(response, function eachLog(log) {
+        angular.forEach(brews, function eachLog(log, key) {
 
           log.date = new Date(log.date);
           if (log.date < new Date('2013-12-25')) {
             log.add.temp = log.add.temp / 1000;
           }
 
-          if (i % skip === 0) {
+          if (key % skip === 0) {
             dateLabel = log.date.getHours() + ':' + (log.date.getMinutes() < 10 ? '0' + log.date.getMinutes() : log.date.getMinutes());
 
             // max-min temp
@@ -113,8 +125,6 @@ angular.module('brewpiApp')
             $scope.chart.pwm.datasets[0].data.push(log.add.pwm * 100);
 
           }
-
-          i++;
         });
 
         $scope.options.temp.scaleOverride = false;
@@ -128,4 +138,3 @@ angular.module('brewpiApp')
       });
     };
   });
-
