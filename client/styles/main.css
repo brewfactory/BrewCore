@@ -1,0 +1,46 @@
+body {
+    padding-top: 70px;
+    padding-bottom: 70px;
+    background-color: #fbfbfb;
+}
+
+@media (max-width: 768px) {
+    body {
+        padding-top: 110px;
+    }
+}
+
+.navbar-inverse {
+    background-color: #1f80e3;
+    border: none;
+}
+
+.navbar-inverse .navbar-nav > li > a, .navbar-inverse .navbar-link {
+    color: #b3d9ff;
+}
+
+.navbar-inverse .navbar-brand {
+    color: #FFF;
+}
+
+ul.nav a.active {
+    color: #FFF;
+}
+
+.table tr.info {
+    background-color: #FFF;
+    color:  #1f80e3;
+    font-weight: bold;
+}
+
+.table tr.info2 {
+    background-color: #FFF;
+}
+
+.progress-bar-inactive {
+    background-color: #e0e0e0;
+}
+
+.progress-bar-inactive2 {
+    background-color: #cccccc;
+}

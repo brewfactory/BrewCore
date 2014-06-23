@@ -1,0 +1,22 @@
+<div class="row">
+    <div class="col-lg-4">
+        <div class="form-group">
+            <select ng-model="brew" class="form-control"
+                    ng-options="(b.name + ' (' +  (b.from | date:'yyyy-MM-dd') + ')') for b in brews"></select>
+        </div>
+    </div>
+</div>
+
+<h4>Temperature</h4>
+<div class="row">
+    <div class="graph col-lg-12">
+        <canvas chart type="Line" options="options.temp" data="chart.temp" width="1000" height="500"></canvas>
+    </div>
+</div>
+
+<h4>PWM</h4>
+<div class="row">
+    <div class="graph col-lg-12">
+        <canvas chart type="Line" options="options.pwm" data="chart.pwm" width="1000" height="500"></canvas>
+    </div>
+</div>

@@ -1,0 +1,235 @@
+<div class="row">
+    <div class="col-lg-12">
+        <notification title="'Phase ended!'" text="'Actual phase is ended'" soundSource="sounds/horse"
+                      trigger="phaseChanged"></notification>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="progress" ng-show="actualBrew.phases">
+            <span ng-repeat="phase in actualBrew.phases">
+              <div class="progress-bar" style="width: 1%"  ng-class="{
+                            'active progress-striped progress-bar-danger': phase.inProgress && !phase.tempReached,
+                            'progress-bar-inactive2': !phase.inProgress
+                        }">
+                  <span class="sr-only">wait</span>
+              </div>
+
+                <div class="progress-bar"  ng-class="{
+                            'progress-bar-success': phase.tempReached && !phase.inProgress,
+                            'progress-bar-warning': phase.inProgress && !phase.tempReached,
+                            'progress-striped active': phase.inProgress && phase.tempReached,
+                            'progress-bar-inactive': !phase.inProgress && !phase.tempReached
+                        }"
+                     style="width: {{
+                     (100 - actualBrew.phases.length * (1 + 10))
+                      /
+                      phasesDuration
+                      *
+                      phase.min
+                      + 10
+                      }}%">
+                    <span class="">{{phase.min}} min, {{phase.temp}}&deg; {{phase.jobEnd | date: 'HH:mm'}}</span>
+                </div>
+            </span>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+
+    <!-- region dashboard -->
+
+    <div class="col-lg-3">
+        <div class="well">
+            <h1 ng-model="temp">{{temp.value}}&deg;</h1>
+
+            <h3>PWM: {{pwm.actual | number:2}}%</h3>
+
+            <div class="progress">
+                <div class="progress-bar" role="progressbar" aria-valuenow="{{pwm.actual}}" aria-valuemin="0"
+                     aria-valuemax="100" style="width: {{pwm.actual}}%;">
+                    <span class="sr-only">{{pwm.actual | number:2}}%</span>
+                </div>
+            </div>
+
+            <form name="setpwm" ng-submit="setPwm()" novalidate>
+                <div class="form-group">
+                    <label for="pwmSet">Set: 0-100% (ex: 50%)</label>
+
+                    <div class="input-group">
+                        <input class="form-control" id="pwmSet" type="number" min="0" max="100" ng-model="pwm.value"
+                               value="{{pwm.value}}" required/>
+                        <span class="input-group-btn">
+                            <button type="submit" class="btn btn-primary" ng-disabled="setpwm.$invalid">
+                                Set
+                            </button>
+                        </span>
+                    </div>
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+    <!-- end region dashboard -->
+
+    <!-- region set schedule -->
+
+    <div class="col-lg-6">
+        <div class="well">
+            <h3>Set schedule</h3>
+
+            <form name="brewForm">
+                <div class="form-group">
+                    <label for="name"><strong>Name</strong></label>
+                    <input id="name" type="text" placeholder="name" min="0" ng-model="brew.name" value="brew.name"
+                           required class="form-control">
+                </div>
+
+                <div class="form-group">
+                    <div class="checkbox">
+                    <label for="startTime">
+                        <input id="startTime" type="checkbox" ng-model="isStartTime">
+                        <strong>Start time</strong>
+                    </label>
+                        </div>
+
+                    <div class="bootstrap-timepicker" ng-show="isStartTime">
+                        <input value="brew.startHour" type="text" timepicker="" class="form-control">
+                    </div>
+                </div>
+            </form>
+
+            <label for="newMin"><strong>Add new phase</strong></label>
+
+            <form role="form" ng-submit="addPhase()">
+                <table class="table">
+                    <tbody>
+                    <tr>
+                        <td>
+                            <div class="input-group">
+                                <input class="form-control" id="newMin" type="number" min="0" ng-model="newPhase.min"
+                                       placeholder="min">
+                                <span class="input-group-addon">min</span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="input-group">
+                                <input class="form-control" type="number" min="0" step="any" ng-model="newPhase.temp"
+                                       placeholder="C&deg;">
+                                <span class="input-group-addon">C&deg;</span>
+                            </div>
+                        </td>
+                        <td>
+                            <button type="submit" class="btn btn-primary">Add</button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </form>
+
+            <table class="table table-hover" ng-show="brew.phases.length">
+                <thead>
+                <tr>
+                    <th>Min</th>
+                    <th>Temp</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="(key,phase) in brew.phases">
+                    <td>
+                        <div class="input-group">
+                            <input class="form-control" type="number" min="0" value="phase.min" ng-model="phase.min"
+                                   placeholder="min">
+                            <span class="input-group-addon">min</span>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="input-group">
+                            <input class="form-control" type="number" min="0" step="any" value="phase.temp"
+                                   ng-model="phase.temp"
+                                   placeholder="C&deg;">
+                            <span class="input-group-addon">C&deg;</span>
+                        </div>
+                    </td>
+                    <td>
+                        <button class="btn btn-mini btn-danger" type="button" ng-click="removePhase(key)">
+                            Delete
+                        </button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <button class="btn btn-primary" type="button" ng-click="synchronize()"
+                    ng-disabled="!brewForm.$valid || !brew.phases.length">Synchronize
+            </button>
+        </div>
+    </div>
+
+    <!-- end region set schedule -->
+
+    <!-- region actual schedule -->
+
+    <div class="col-lg-3">
+        <div class="well">
+            <h3>Actual schedule</h3>
+
+            <div ng-hide="actualBrew.phases.length">
+                <h5>We are not brewing :(</h5>
+
+                <p>How is it possible?</p>
+            </div>
+            <div ng-show="actualBrew.phases.length">
+                <h4>{{actualBrew.name}}</h4>
+
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th>Min</th>
+                        <th>Temp</th>
+                        <th>End</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="phase in actualBrew.phases"
+                        ng-class="{
+                            info: phase.tempReached && phase.inProgress,
+                            info2: phase.inProgress && !phase.tempReached
+                        }">
+                        <td>{{phase.min}} min</td>
+                        <td>{{phase.temp}}&deg;</td>
+                        <td>{{phase.jobEnd | date: 'HH:mm'}}</td>
+                    </tr>
+                    </tbody>
+                    <tr>
+                        <td colspan="2">
+                            <strong>Start time:</strong><br/>
+                            {{actualBrew.startTime | date: 'yyyy-MM-dd HH:mm'}}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <span ng-switch on="actualBrew.paused">
+                                <button class="btn btn-primary" ng-click="pause()" ng-switch-when="true">
+                                    Resume
+                                </button>
+                                <button class="btn btn-default" ng-click="pause()" ng-switch-default>
+                                    Pause
+                                </button>
+                            </span>
+                            <button class="btn btn-danger" type="button" ng-click="stop()" ng-hide="actualBrew.paused">
+                                Stop
+                            </button>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- end region actual schedule -->
+</div>
