@@ -19,6 +19,7 @@
     "koa-qs": "^1.0.0",
     "koa-router": "^3.1.4",
     "koa-static": "^1.4.5",
+    "liquid-pid": "0.0.3",
     "lodash": "^2.4.1",
     "mongoose": "^3.8.12",
     "nconf": "^0.6.9",
