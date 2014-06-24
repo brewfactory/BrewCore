@@ -5,7 +5,8 @@
 
 var Brewer = require('./Brewer');
 
-exports.init = Brewer.init;
+Brewer.init();
+
 exports.getProgress = Brewer.getProgress;
 exports.cancelBrew = Brewer.cancelBrew;
 exports.setPaused = Brewer.setPaused;

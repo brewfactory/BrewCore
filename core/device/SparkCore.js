@@ -17,6 +17,8 @@ var core1 = new spark.Core({
   id: device1Id
 });
 
+core1.setPoint = function () {};
+
 core1.on('error', function (err) {
   Logger.error('Error happened', LOG, {
     err: err,

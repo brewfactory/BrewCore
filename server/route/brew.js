@@ -21,7 +21,11 @@ exports.set = function *(next) {
   var phases = body.phases || [];
 
   // Set new Brew
-  Brewer.setBrew(name, phases, startTime);
+  Brewer.setBrew({
+    name: name,
+    phases: phases,
+    startTime: startTime
+  });
 
   // Res
   yield next;

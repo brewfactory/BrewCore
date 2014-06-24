@@ -3,6 +3,6 @@
  *
  */
 
-var SparkCore = require('./SparkCore');
+var SparkCore = require('./SparkCoreMock');
 
 exports.core1 = SparkCore.core1;

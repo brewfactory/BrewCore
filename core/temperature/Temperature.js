@@ -9,17 +9,36 @@ var core1 = require('../device').core1;
 var Logger = require('../module/Logger');
 var LOG = 'Temperature';
 
+var Event = require('../event');
+
 var actual;
 var point;
 
 var INACTIVE_POINT = 5;
 
+point = INACTIVE_POINT;
+
+// If core stopped
+setInterval(function () {
+  core1.setPoint(point, function(err, data) {
+    if(err) {
+      return Logger.error('Set point', LOG, { err: err, point: point, data: data });
+    }
+
+    console.log('data', data);
+  });
+}, 5000);
+
 
 /*
  * On tmpinfo event from the SparkCloud
  */
-core1.on('tmpinfo', function(info) {
+core1.on('tempInfo', function(info) {
   actual = info.data;
+
+  Logger.silly('Temp updated', LOG, { temp: actual });
+
+  Event.temperature.changed(actual);
 });
 
 

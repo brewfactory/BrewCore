@@ -227,19 +227,17 @@ exports.setPaused = function () {
  * Set new brew
  *
  * @method setBrew
- * @param {String} name
- * @param {Array} phases
- * @param {Date} startTime as Date str
+ * @param {Object} params
  */
-exports.setBrew = function (name, phases, startTime) {
+exports.setBrew = function (params) {
 
   // cancel earlier
   endBrew();
 
   // set actual
-  _actualBrew.name = name;
-  _actualBrew.phases = phases;
-  _actualBrew.startTime = new Date(startTime);
+  _actualBrew.name = params.name;
+  _actualBrew.phases = params.phases;
+  _actualBrew.startTime = new Date(params.startTime);
 
   // Set default phases
   _actualBrew.phases = _actualBrew.phases.map(function (phase) {
