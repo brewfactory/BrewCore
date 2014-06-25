@@ -11,7 +11,7 @@ var schedule = require('node-schedule');
 var Logger = require('./../module/Logger');
 var LOG = 'Brewer';
 
-// dependencies
+// Core dependencies
 var temperature = require('../temperature');
 var coreEvent = require('../event');
 

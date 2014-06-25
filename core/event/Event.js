@@ -7,12 +7,12 @@
 var EventEmitter = require('events').EventEmitter;
 var coreEmitter = new EventEmitter();
 
-var core1 = require('../device').core1;
-
 var Logger = require('../module/Logger');
 var LOG = 'Event';
 
-var Brewer = require('../brewer');
+// Core dependencies
+var device = require('../device');
+var brewer = require('../brewer');
 
 exports.brewer = {};
 exports.temperature = {};
@@ -60,7 +60,7 @@ exports.brewer.phaseChanged = function (phase) {
  *
  */
 exports.temperature.changed = function (temperature) {
-  Brewer.onTempUpdate(temperature);
+  brewer.onTempUpdate(temperature);
 
   coreEmitter.emit('temperature:changed', temperature);
 };
@@ -69,7 +69,7 @@ exports.temperature.changed = function (temperature) {
 /*
  * PWM changed
  */
-core1.on('pwmInfo', function(info) {
+device.core1.on('pwmInfo', function(info) {
   var pwm = info.data;
 
   Logger.silly('PWM updated', LOG, { pwm: pwm });
