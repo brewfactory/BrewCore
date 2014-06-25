@@ -43,7 +43,7 @@
 
     <div class="col-lg-3">
         <div class="well">
-            <h1 ng-model="temp">{{temp.value}}&deg;</h1>
+            <h1 ng-model="temp">{{temp.value | number:2}}&deg;</h1>
 
             <h3>PWM: {{pwm.actual | number:2}}%</h3>
 
@@ -53,23 +53,6 @@
                     <span class="sr-only">{{pwm.actual | number:2}}%</span>
                 </div>
             </div>
-
-            <form name="setpwm" ng-submit="setPwm()" novalidate>
-                <div class="form-group">
-                    <label for="pwmSet">Set: 0-100% (ex: 50%)</label>
-
-                    <div class="input-group">
-                        <input class="form-control" id="pwmSet" type="number" min="0" max="100" ng-model="pwm.value"
-                               value="{{pwm.value}}" required/>
-                        <span class="input-group-btn">
-                            <button type="submit" class="btn btn-primary" ng-disabled="setpwm.$invalid">
-                                Set
-                            </button>
-                        </span>
-                    </div>
-                </div>
-            </form>
-
         </div>
     </div>
 

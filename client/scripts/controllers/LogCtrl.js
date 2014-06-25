@@ -4,10 +4,10 @@
  * @controller LogCtrl
  */
 
-'use strict';
-
 angular.module('brewpiApp')
   .controller('LogCtrl', function ($scope, LogService) {
+    'use strict';
+
     var findBrew;
 
     $scope.options = {};

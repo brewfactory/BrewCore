@@ -1,42 +1,32 @@
-'use strict';
+/*
+ * Main controller
+ *
+ * @controller MainCtrl
+ */
 
 angular.module('brewpiApp')
-  .controller('MainCtrl', function ($scope, socket, BrewService, ActualBrewService) {
+  .controller('MainCtrl', function ($scope, $log, socket, BrewService, ActualBrewService) {
+    'use strict';
+
+    var now = new Date();
+
+
+    /*
+     * Scope model
+     *
+     */
 
     $scope.phasesDuration = 0;
-
-    var
-      now = new Date(),
-      updatePhasesDuration;
-
-    updatePhasesDuration = function () {
-      $scope.phasesDuration = 0;
-      angular.forEach($scope.actualBrew.phases, function (phase) {
-        $scope.phasesDuration += +phase.min;
-      });
-    };
+    $scope.actualBrew = null;
 
     // scope model
     $scope.temp = {
       value: 0
     };
 
+    // pwm
     $scope.pwm = {
-      value: 0,
       actual: 0
-    };
-
-    // set pwm
-    $scope.setPwm = function () {
-      if (isNaN($scope.pwm.value)) {
-        return;
-      }
-
-      // set value
-      socket.emit('pwm:set:manual', {
-        pwm: $scope.pwm.value
-      });
-
     };
 
     // new phase
@@ -49,14 +39,18 @@ angular.module('brewpiApp')
     $scope.brew = {
       name: null,
       startHour: now.getHours() + ':' + now.getMinutes(),
-      startTime: new Date(),
+      startTime: now,
       phases: []
     };
 
-    // start hour changed
+
+    /*
+     * Scope watch
+     *
+     */
     $scope.$watch('brew.startHour', function changed(value) {
-      var hour = value.split(':')[0],
-        min = value.split(':')[1];
+      var hour = value.split(':')[0];
+      var min = value.split(':')[1];
 
       $scope.brew.startTime.setHours(hour);
       $scope.brew.startTime.setMinutes(min);
@@ -66,8 +60,25 @@ angular.module('brewpiApp')
     });
 
 
-    // synchronize
-    $scope.synchronize = function synchronize() {
+    /*
+     * Update phase duration
+     *
+     */
+    function updatePhasesDuration () {
+      $scope.phasesDuration = 0;
+
+      angular.forEach($scope.actualBrew.phases, function (phase) {
+        $scope.phasesDuration += +phase.min;
+      });
+    }
+
+
+    /*
+     * Synchronize
+     *
+     * @method synchronize
+     */
+    $scope.synchronize = function () {
       var phases = [];
 
       angular.forEach($scope.brew.phases, function eachPhase(phase) {
@@ -85,17 +96,30 @@ angular.module('brewpiApp')
 
     };
 
-    // remove phase
-    $scope.removePhase = function removePhase(key) {
-      $scope.brew.phases.splice(key, 1);
+
+    /*
+     * Remove phase
+     *
+     * @method removePhase
+     * @param {Number} key
+     */
+    $scope.removePhase = function (idx) {
+      $scope.brew.phases.splice(idx, 1);
     };
 
-    // add phase
-    $scope.addPhase = function addPhase() {
+
+    /*
+     * Add phase
+     *
+     * @method addPhase
+     */
+    $scope.addPhase = function () {
+      var min = parseInt($scope.newPhase.min, 10);
+      var temp = parseInt($scope.newPhase.temp, 10);
 
       $scope.brew.phases.push({
-        min: parseInt($scope.newPhase.min, 10),
-        temp: parseInt($scope.newPhase.temp, 10)
+        min: min,
+        temp: temp
       });
 
       $scope.newPhase.min = 0;
@@ -103,45 +127,79 @@ angular.module('brewpiApp')
 
     };
 
-    socket.on('status', function (data) {
-      $scope.temp.value = data.temp;
-      $scope.pwm.actual = data.pwm * 100;
+
+    /*
+     * Brew update handle
+     *
+     * @method brewUpdateHandle
+     * @param {Object} brew
+     */
+    function brewUpdateHandle (brew) {
+      $scope.actualBrew = brew;
+      updatePhasesDuration();
+    }
+
+
+    /*
+     * Stop
+     *
+     * @method stop
+     */
+    $scope.stop = function () {
+      BrewService.stop();
+    };
+
+
+    /*
+     * Pause
+     *
+     * @method pause
+     */
+    $scope.pause = function () {
+      BrewService.pause();
+    };
+
+
+    /*
+     * Socket
+     *
+     */
+
+    // Temperature changed
+    socket.on('temperature:changed', function (data) {
+      $scope.temp.value = data;
     });
 
 
-    // phase ended
-    socket.on('phase:changed', function (data) {
+    // PWM changed
+    socket.on('pwm:changed', function (data) {
+      $scope.pwm.actual = data;
+    });
+
+
+    // Phase ended
+    socket.on('brew:phase', function (data) {
       if (data && data.status === 'ended') {
         ($scope.phaseChanged || angular.noop)();
       }
     });
 
+    // Brew changed
+    socket.on('brew:changed', brewUpdateHandle);
 
-    // actual brew
-    $scope.actualBrew = null;
-    setTimeout(function () {
-      $scope.actualBrew = ActualBrewService.getActual();
 
-      updatePhasesDuration();
-    }, 10);
+    /*
+     * Initialize
+     *
+     * @method init
+     */
+    function init () {
 
-    ActualBrewService.onUpdate($scope, function update(actualBrew) {
-      $scope.actualBrew = actualBrew;
+      // Get actual brew
+      ActualBrewService.getActual(brewUpdateHandle);
+    }
 
-      updatePhasesDuration();
-    });
-
-    // brew
-    $scope.actualBrew = ActualBrewService;
-
-    // stop
-    $scope.stop = function stop() {
-      BrewService.stop();
-    };
-
-    // pause
-    $scope.pause = function pause() {
-      BrewService.pause();
-    };
+    // Initialize
+    init();
 
   });
