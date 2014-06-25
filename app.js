@@ -19,18 +19,18 @@ var mongoose = require('mongoose');
 
 var path = require('path');
 
-var core = require('core');
-
 var Logger = require('./server/module/Logger');
 
 var Socket = require('./server/module/Socket');
 var app = koa();
 
-var io;
-
 var server;
 var PORT;
 
+
+/**
+ * Configuration
+ */
 
 if (process.env.NODE_ENV === 'production') {
   nconf.file(path.join(__dirname, 'config/prod.json'));
@@ -45,12 +45,6 @@ else {
 mongoose.connect(nconf.get('mongo:connect'));
 
 PORT = process.env.PORT || nconf.get('port');
-
-
-/*
- * Core
- */
-core.init();
 
 
 /**
@@ -85,7 +79,6 @@ app.use(serve(process.env.CLIENT_DIR || nconf.get('client')));
   app.get('/brew/stop', brew.stop);
   app.get('/brew/pause', brew.pause);
 
-
 // logs
   app.get('/api/logs/brews', log.findBrew);
   app.get('/api/logs', log.find);
@@ -97,7 +90,8 @@ app.use(serve(process.env.CLIENT_DIR || nconf.get('client')));
  * Fire up the server
  */
 
-server = app.listen(PORT, function () {
+server = require('http').Server(app.callback());
+server.listen(PORT, function () {
   Logger.info('Server is listening on ' + PORT, 'app', {
     name: pkg.name,
     version: pkg.version
@@ -106,10 +100,23 @@ server = app.listen(PORT, function () {
 
 
 /**
- * Configure socket.io
+ * Socket.io
  */
 
-io = require('socket.io').listen(server);
-io.set('log level', 1);
+{
+  let io = require('socket.io')(server);
 
-Socket.init(io);
+  Socket.init(io);
+}
+
+
+/*
+ * Core (brewer)
+ */
+{
+  let core = require('./core');
+
+  Socket.setCoreEmitter(core.emitter);
+
+  core.init();
+}
