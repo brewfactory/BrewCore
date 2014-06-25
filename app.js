@@ -19,8 +19,9 @@ var mongoose = require('mongoose');
 
 var path = require('path');
 
-var LoggerServer = require('./server/module/Logger');
-var LoggerCore = require('./core/module/Logger');
+var core = require('core');
+
+var Logger = require('./server/module/Logger');
 
 var Socket = require('./server/module/Socket');
 var app = koa();
@@ -46,6 +47,12 @@ mongoose.connect(nconf.get('mongo:connect'));
 PORT = process.env.PORT || nconf.get('port');
 
 
+/*
+ * Core
+ */
+core.init();
+
+
 /**
  * Configuring middlewares
  */
@@ -55,8 +62,7 @@ app.use(etag());
 app.use(body());
 app.use(router(app));
 
-LoggerServer.init();
-LoggerCore.init();
+Logger.init();
 
 app.use(serve(process.env.CLIENT_DIR || nconf.get('client')));
 
@@ -92,7 +98,7 @@ app.use(serve(process.env.CLIENT_DIR || nconf.get('client')));
  */
 
 server = app.listen(PORT, function () {
-  LoggerServer.info('Server is listening on ' + PORT, 'app', {
+  Logger.info('Server is listening on ' + PORT, 'app', {
     name: pkg.name,
     version: pkg.version
   });

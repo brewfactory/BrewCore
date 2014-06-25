@@ -4,7 +4,7 @@
  * @routing brew
  **/
 
-var Brewer = require('../../core/brewer');
+var core = require('../../core');
 
 
 /**
@@ -21,7 +21,7 @@ exports.set = function *(next) {
   var phases = body.phases || [];
 
   // Set new Brew
-  Brewer.setBrew({
+  core.brew.set({
     name: name,
     phases: phases,
     startTime: startTime
@@ -42,7 +42,7 @@ exports.set = function *(next) {
  * @param {Function} next
  */
 exports.stop = function *(next) {
-  Brewer.cancelBrew();
+  core.brew.cancel();
 
   // Res
   yield next;
@@ -59,7 +59,7 @@ exports.stop = function *(next) {
  * @param {Function} next
  */
 exports.pause = function *(next) {
-  var paused = Brewer.setPaused();
+  var paused = core.brew.pause();
 
   // Res
   yield next;
