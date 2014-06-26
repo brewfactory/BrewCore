@@ -4,7 +4,7 @@
  * @module app
  **/
 
-  'use strict';
+'use strict';
 
 var pkg = require('./package.json');
 
