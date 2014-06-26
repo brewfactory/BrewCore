@@ -28,3 +28,5 @@ node_modules
 
 client/bower_components
 .sparkcache.json
+
+config/myConfig.json
