@@ -34,6 +34,18 @@ function tempInfoHandler (info) {
 }
 
 
+
+/*
+ * Point info handler
+ *
+ * @method pointInfoHandler
+ * @param {Object} info
+ */
+function pointInfoHandler (info) {
+  Logger.silly('Point updated', LOG, { pointTemp: info.data });
+}
+
+
 /*
  * Init
  */
@@ -44,8 +56,9 @@ exports.init = function () {
     exports.setPoint(point);
   }, 5000);
 
-  // SparkCloud tempInfo
-  device.core1.on('tempInfo', tempInfoHandler);
+  // Subscribe to SparkCloud events
+  device.coreEmitter.on('tempInfo', tempInfoHandler);
+  device.coreEmitter.on('pointInfo', pointInfoHandler);
 };
 
 
@@ -67,9 +80,13 @@ exports.getActual = function () {
  * @param {Number} _point
  */
 exports.setPoint = function (_point) {
+  var strPoint;
+
   point = _point;
 
-  device.core1.setPoint(point, function(err) {
+  strPoint = point.toString();
+
+  device.setPoint(strPoint, function(err) {
     if(err) {
       return Logger.error('Set point', LOG, { err: err, point: point });
     }

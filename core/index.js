@@ -13,6 +13,7 @@ var Emitter = coreEvent.emitter;
 
 var temperature = require('./temperature');
 var brewer = require('./brewer');
+var device = require('./device');
 
 
 /*
@@ -24,6 +25,7 @@ var brewer = require('./brewer');
 function init () {
   Logger.init();
 
+  device.init();
   temperature.init();
   brewer.init();
 

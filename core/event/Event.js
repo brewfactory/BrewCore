@@ -69,7 +69,7 @@ exports.temperature.changed = function (temperature) {
 /*
  * PWM changed
  */
-device.core1.on('pwmInfo', function(info) {
+device.coreEmitter.on('pwmInfo', function(info) {
   var pwm = info.data;
 
   Logger.silly('PWM updated', LOG, { pwm: pwm });
