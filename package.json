@@ -24,6 +24,7 @@
     "mongoose": "^3.8.12",
     "nconf": "^0.6.9",
     "node-schedule": "^0.1.13",
+    "socket.io": "^1.0.6",
     "sparknode": "^0.4.7",
     "winston": "^0.7.3"
   },
