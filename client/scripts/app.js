@@ -1,19 +1,22 @@
-'use strict';
+/*
+ * App
+ *
+ */
 
 (function () {
+  'use strict';
 
-  var
-    deps = [
-      'ngResource',
-      'ngRoute',
+  var deps = [
+    'ngResource',
+    'ngRoute',
 
-      'angles',
-      'btford.socket-io',
+    'angles',
+    'btford.socket-io',
 
-      'BSTimePicker',
-      'Navigation',
-      'Notification'
-    ];
+    'BSTimePicker',
+    'Navigation',
+    'Notification'
+  ];
 
   angular.module('brewpiApp', deps)
     .config(function ($routeProvider) {

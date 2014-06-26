@@ -3,9 +3,10 @@
  *
  */
 
-var Temperature = require('./Temperature');
+var temperature = require('./Temperature');
 
 
-exports.setPointToInactive = Temperature.setPointToInactive;
-exports.getActual = Temperature.getActual;
-exports.setPoint = Temperature.setPoint;
+exports.init = temperature.init;
+exports.setPointToInactive = temperature.setPointToInactive;
+exports.getActual = temperature.getActual;
+exports.setPoint = temperature.setPoint;

@@ -4,12 +4,12 @@
  * @module Temperature
  */
 
-var core1 = require('../device').core1;
-
 var Logger = require('../module/Logger');
 var LOG = 'Temperature';
 
-var Event = require('../event');
+// Core dependencies
+var coreEvent = require('../event');
+var device = require('../device');
 
 var actual;
 var point;
@@ -18,28 +18,48 @@ var INACTIVE_POINT = 5;
 
 point = INACTIVE_POINT;
 
-// If core stopped
-setInterval(function () {
-  core1.setPoint(point, function(err, data) {
-    if(err) {
-      return Logger.error('Set point', LOG, { err: err, point: point, data: data });
-    }
-
-    console.log('data', data);
-  });
-}, 5000);
-
 
 /*
- * On tmpinfo event from the SparkCloud
+ * Temp info handler
+ *
+ * @method tempInfoHandler
+ * @param {Object} info
  */
-core1.on('tempInfo', function(info) {
+function tempInfoHandler (info) {
   actual = info.data;
 
   Logger.silly('Temp updated', LOG, { temp: actual });
 
-  Event.temperature.changed(actual);
-});
+  coreEvent.temperature.changed(actual);
+}
+
+
+
+/*
+ * Point info handler
+ *
+ * @method pointInfoHandler
+ * @param {Object} info
+ */
+function pointInfoHandler (info) {
+  Logger.silly('Point updated', LOG, { pointTemp: info.data });
+}
+
+
+/*
+ * Init
+ */
+exports.init = function () {
+
+  // Set point interval, because spark maybe restarted
+  setInterval(function () {
+    exports.setPoint(point);
+  }, 5000);
+
+  // Subscribe to SparkCloud events
+  device.coreEmitter.on('tempInfo', tempInfoHandler);
+  device.coreEmitter.on('pointInfo', pointInfoHandler);
+};
 
 
 /*
@@ -60,9 +80,13 @@ exports.getActual = function () {
  * @param {Number} _point
  */
 exports.setPoint = function (_point) {
+  var strPoint;
+
   point = _point;
 
-  core1.setPoint(point, function(err) {
+  strPoint = point.toString();
+
+  device.setPoint(strPoint, function(err) {
     if(err) {
       return Logger.error('Set point', LOG, { err: err, point: point });
     }

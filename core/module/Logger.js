@@ -6,46 +6,45 @@
 
 'use strict';
 
-var
-  winston = require('winston'),
+var winston = require('winston');
 
-  LogModel = require('../../schema/Log'),
-  LOG = __filename.split('/').pop(),
+var LogModel = require('../../schema/Log');
+var LOG = 'LoggerCore';
 
-  CONFIG = {
+var CONFIG = {
 
-    // Winston log levels
-    levels: {
-      silly: 0,
-      verbose: 1,
-      data: 2,
-      event: 3,
-      info: 4,
-      warn: 5,
-      debug: 6,
-      error: 7,
-      silent: 8
-    },
-    colors: {
-      silly: 'white',
-      verbose: 'green',
-      data: 'grey',
-      event: 'grey',
-      info: 'cyan',
-      warn: 'yellow',
-      debug: 'blue',
-      error: 'red',
-      silent: 'white'
-    },
-
-    isProduction: false,
-    statusFrequency: 30000
+  // Winston log levels
+  levels: {
+    silly: 0,
+    verbose: 1,
+    data: 2,
+    event: 3,
+    info: 4,
+    warn: 5,
+    debug: 6,
+    error: 7,
+    silent: 8
+  },
+  colors: {
+    silly: 'white',
+    verbose: 'green',
+    data: 'grey',
+    event: 'grey',
+    info: 'cyan',
+    warn: 'yellow',
+    debug: 'blue',
+    error: 'red',
+    silent: 'white'
   },
 
-  lastStatusReport = new Date(),
-  lastWaitingReports = [],
+  isProduction: false,
+  statusFrequency: 30000
+};
 
-  Logger;
+var lastStatusReport = new Date();
+var lastWaitingReports = [];
+
+var Logger;
 
 
 /**

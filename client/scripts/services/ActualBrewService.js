@@ -1,40 +1,49 @@
-'use strict';
+/*
+ * Actual brew service
+ *
+ * @service ActualBrewService
+ */
 
 // TODO: refactor
 angular.module('brewpiApp')
-  .factory('ActualBrewService', function ($rootScope, socket) {
+  .factory('ActualBrewService', function ($q, socket) {
+    'use strict';
 
-    var MSG_ID = 'actualBrewUpdate',
+    var deferred = $q.defer();
+    var resolved = false;
 
-      actualBrew = {
+    var actualBrew = {
         name: null,
         phases: [],
         startTime: null,
         paused: false
-      },
+      };
 
-    // private methods
-      _onUpdate,
-      _getActual;
 
-    socket.on('actual:brew', function (_actualBrew) {
+    /*
+     * Socket
+     *
+     */
+    socket.on('brew:changed', function (_actualBrew) {
       actualBrew = _actualBrew;
-
-      $rootScope.$broadcast(MSG_ID, actualBrew);
+      resolved = true;
+      deferred.resolve(actualBrew);
     });
 
-    _onUpdate = function _onUpdate($scope, handler) {
-      $scope.$on(MSG_ID, function (event, message) {
-        handler(message);
-      });
-    };
 
-    _getActual = function _getActual() {
-      return actualBrew;
-    };
+    /*
+     * Get actual
+     * @method getActual
+     */
+    function getActual(callback) {
+      if(resolved === true) {
+        return callback(actualBrew);
+      }
+
+      deferred.promise.then(callback);
+    }
 
     return {
-      getActual: _getActual,
-      onUpdate: _onUpdate
+      getActual: getActual
     };
   });

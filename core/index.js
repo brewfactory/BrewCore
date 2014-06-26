@@ -5,6 +5,39 @@
  */
 
 
-var Brewer = require('./Brewer');
+var Logger = require('./module/Logger');
+var LOG = 'Core';
 
-Brewer.init();
+var coreEvent = require('./event');
+var Emitter = coreEvent.emitter;
+
+var temperature = require('./temperature');
+var brewer = require('./brewer');
+var device = require('./device');
+
+
+/*
+
+ * Init
+ *
+ * @method init
+ */
+function init () {
+  Logger.init();
+
+  device.init();
+  temperature.init();
+  brewer.init();
+
+  Logger.info('Init', LOG);
+}
+
+exports.emitter = Emitter;
+
+exports.init = init;
+
+exports.brew = {};
+exports.brew.cancel = brewer.cancelBrew;
+exports.brew.set = brewer.setBrew;
+exports.brew.pause = brewer.setPaused;
+exports.brew.get = brewer.getActualBrew;

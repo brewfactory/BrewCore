@@ -14,3 +14,5 @@ exports.brewer.phaseChanged = Event.brewer.phaseChanged;
 
 exports.temperature = {};
 exports.temperature.changed = Event.temperature.changed;
+
+exports.emitter = Event.emitter;

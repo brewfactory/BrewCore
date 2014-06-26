@@ -4,11 +4,13 @@
  * @module SparkCore
  */
 
-var EventEmitter = require('events').EventEmitter;
+var events = require('events');
+var coreEmitter = new events.EventEmitter();
 
 var PIDController = require('liquid-pid');
 
-var core1 = new EventEmitter();
+var Logger = require('../module/Logger');
+var LOG = 'SparkCoreMock';
 
 var pwm = 0;
 var pointTemp = 25;
@@ -39,6 +41,39 @@ pidController = new PIDController({
   }
 });
 
+var connected = false;
+
+var core1;
+
+
+/*
+ * Initialize
+ *
+ * @method init
+ */
+exports.init = function () {
+  var core1Emit;
+
+  core1 = new events.EventEmitter();
+
+  core1Emit = core1.emit;
+
+  // Pipe emitter
+  // FIXME: anything better?
+  core1.emit = function() {
+    var args = Array.prototype.slice.call(arguments);
+
+    // Original
+    core1Emit.apply(core1, args);
+
+    // Root emitter
+    coreEmitter.emit.apply(coreEmitter, args);
+  };
+
+  // Fake connect
+  core1.emit('connect');
+};
+
 
 /*
  * Calculate temp
@@ -47,13 +82,13 @@ pidController = new PIDController({
  * @param {Number} _pwm
  * @param {Date} date
  */
-function calculateTemp (_pwm, date) {
+function calculateTemp(_pwm, date) {
   var deltaTime = date || new Date();
   deltaTime = deltaTime.getTime();
 
   pwm = _pwm || pwm;
 
-  if(dt) {
+  if (dt) {
     deltaTime = deltaTime - dt.getTime();
     deltaTime /= 1000;
 
@@ -71,7 +106,7 @@ function calculateTemp (_pwm, date) {
  *
  * @method calculatePWM
  */
-function calculatePWM () {
+function calculatePWM() {
   pwm = pidController.calculate(temp);
 }
 
@@ -80,28 +115,64 @@ function calculatePWM () {
  * Set point
  *
  * @method setPoint
+ * @param {String} pointStr
+ * @callback
  */
-core1.setPoint = function (temp) {
-  pointTemp = temp;
+exports.setPoint = function (pointStr, callback) {
+  if (connected === false) {
+    return;
+  }
+
+  pointTemp = Number(pointStr);
 
   pidController.setPoint(pointTemp);
+
+  Logger.info('setPoint to core1', LOG, { point: pointStr });
 };
 
 
-// Temp info interval
-setInterval(function () {
-  calculateTemp();
+/*
+ * Init fake events
+ *
+ * @method initFakeEvents
+ */
+function initFakeEvents() {
+  // Temp info interval
+  setInterval(function () {
+    calculateTemp();
 
-  core1.emit('tempInfo', { data: temp });
-}, INTERVAL_TEMP);
+    core1.emit('tempInfo', { data: temp });
+  }, INTERVAL_TEMP);
 
 
 // PWM info interval
-setInterval(function () {
-  calculatePWM();
+  setInterval(function () {
+    calculatePWM();
 
-  core1.emit('pwmInfo', { data: (pwm / PMAX) * 100 });
-}, INTERVAL_PWM);
+    core1.emit('pwmInfo', { data: (pwm / PMAX) * 100 });
+  }, INTERVAL_PWM);
+}
 
 
-exports.core1 = core1;
+/*
+ * Events
+ *
+ */
+
+// Connect
+coreEmitter.on('connect', function () {
+  connected = true;
+
+  console.log('connect');
+
+  initFakeEvents();
+});
+
+// Error
+coreEmitter.on('error', function (err) {
+  Logger.error('Error happened', LOG, {
+    err: err
+  });
+});
+
+exports.coreEmitter = coreEmitter;
