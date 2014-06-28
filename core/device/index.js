@@ -3,7 +3,7 @@
  *
  */
 
-var SparkCore = require('./SparkCoreMock');
+var SparkCore = require('./SparkCore');
 
 
 /*
