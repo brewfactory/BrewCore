@@ -6,6 +6,10 @@
 
 var Logger = require('./Logger');
 var core = require('../../core');
+var last = {
+  temp: 0,
+  pwm: 0
+};
 var io;
 
 
@@ -20,6 +24,8 @@ exports.init = function (_io) {
 
   io.on('connect', function () {
     exports.emit('brew:changed', core.brew.get());
+    exports.emit('temperature:changed', last.temp);
+    exports.emit('pwm:changed', last.pwm);
   });
 };
 
@@ -76,12 +82,14 @@ exports.setCoreEmitter = function (emitter) {
 
   // Temperature
   emitter.on('temperature:changed', function (data) {
-    exports.emit  ('temperature:changed', data);
+    last.temp = data;
+    exports.emit('temperature:changed', data);
   });
 
 
   // PWM
   emitter.on('pwm:changed', function (data) {
+    last.pwm = data;
     exports.emit('pwm:changed', data);
   });
 };

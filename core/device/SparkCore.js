@@ -4,16 +4,23 @@
  * @module SparkCore
  */
 
+
 var events  = require('events');
 var coreEmitter = new events.EventEmitter();
 
 var nconf = require('nconf');
+var request = require('request');
 var spark = require('sparknode');
 
 var Logger = require('../module/Logger');
 var LOG = 'SparkCore';
 
 var connected = false;
+
+var lastTempEvent = new Date();
+var lastPwmEvent = new Date();
+
+var CLOUD_URL = 'https://api.spark.io/v1/devices/';
 
 var core1;
 
@@ -32,20 +39,106 @@ exports.init = function () {
     id: device1Id
   });
 
+  // Events
   core1.on('connect', function (data) {
     coreEmitter.emit('connect', data);
   });
 
   core1.on('tempInfo', function (data) {
+    lastTempEvent = new Date();
     coreEmitter.emit('tempInfo', data);
   });
 
   core1.on('pwmInfo', function (data) {
+    lastPwmEvent = new Date();
     coreEmitter.emit('pwmInfo', data);
   });
 
   core1.on('error', function (data) {
     coreEmitter.emit('error', data);
+  });
+
+  // Get variables via the REST api
+  setInterval(function () {
+    var now = new Date().getTime();
+
+    // Temperature
+    if(now - lastTempEvent.getTime() > 2000) {
+      exports.getTemperature();
+    }
+
+    // PWM
+    if(now - lastPwmEvent.getTime() > 2000) {
+      exports.getPWM();
+    }
+  }, 3000);
+};
+
+
+/*
+ * Get temperature
+ * get variable via the REST api
+ *
+ * @method getTemperature
+ */
+exports.getTemperature = function () {
+  var url = CLOUD_URL + nconf.get('spark:device1') +
+    '/temperature?access_token=' + nconf.get('spark:token');
+
+  request(url, function (err, res, body) {
+    var temp;
+
+    if(err) {
+      return Logger.error('Get temperature', LOG, { err: err });
+    }
+
+    try {
+      body = JSON.parse(body);
+    } catch (err) {
+      Logger.error('JSON parse', LOG, { err: err, body: body });
+    }
+
+    temp = parseInt(body.result, 10);
+
+    if(!isNaN(temp)) {
+      coreEmitter.emit('tempInfo', {
+        data: temp
+      });
+    }
+  });
+};
+
+
+/*
+ * Get PWM
+ * get variable via the REST api
+ *
+ * @method getPWM
+ */
+exports.getPWM = function () {
+  var url = CLOUD_URL + nconf.get('spark:device1') +
+    '/pwm?access_token=' + nconf.get('spark:token');
+
+  request(url, function (err, res, body) {
+    var pwm;
+
+    if(err) {
+      return Logger.error('Get PWM', LOG, { err: err });
+    }
+
+    try {
+      body = JSON.parse(body);
+    } catch (err) {
+      Logger.error('JSON parse', LOG, { err: err, body: body });
+    }
+
+    pwm = parseInt(body.result, 10);
+
+    if(!isNaN(pwm)) {
+      coreEmitter.emit('pwmInfo', {
+        data: pwm
+      });
+    }
   });
 };
 
