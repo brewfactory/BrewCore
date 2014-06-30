@@ -57,6 +57,16 @@ or
 node --harmony app.js
 ```
 
+// TODO
+-------
+
+ - cover with tests
+ - flash SparkCore from this code
+ - make it to Heroku compatible
+ - store recipes
+ - authentication
+ - grunt tasks fro the front-end optimization
+
 
   [1]: https://github.com/brewfactory/Brewberry
   [2]: https://www.spark.io/
