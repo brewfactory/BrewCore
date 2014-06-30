@@ -33,7 +33,7 @@ You need to flash your SparkCore with the [spark-core-pid-temperature][5] frimwa
     // Change the 
     var SparkCore = require('./SparkCore');
     
-    // line in the **/core/device/index.js** 
+    // line in the "/core/device/index.js"
     // to 
     var SparkCore = require('./SparkCoreMock');
 
