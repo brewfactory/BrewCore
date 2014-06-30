@@ -60,6 +60,6 @@ node --harmony app.js
 
   [1]: https://github.com/brewfactory/Brewberry
   [2]: https://www.spark.io/
-  [3]: https://www.dropbox.com/s/fr43wy29lvuuvku/Screen%20Shot%202014-06-30%20at%2009.00.33.png
-  [4]: https://www.dropbox.com/s/zuq4uum6gsx1595/Screen%20Shot%202014-06-30%20at%2009.01.04.png
+  [3]: https://www.dropbox.com/s/fr43wy29lvuuvku/Screen%20Shot%202014-06-30%20at%2009.00.33.png?dl=1
+  [4]: https://www.dropbox.com/s/zuq4uum6gsx1595/Screen%20Shot%202014-06-30%20at%2009.01.04.png?dl=1
   [5]: https://github.com/brewfactory/spark-core-pid-temperature
