@@ -128,6 +128,8 @@ exports.setPoint = function (pointStr, callback) {
   pidController.setPoint(pointTemp);
 
   Logger.info('setPoint to core1', LOG, { point: pointStr });
+
+  return callback();
 };
 
 
@@ -162,8 +164,6 @@ function initFakeEvents() {
 // Connect
 coreEmitter.on('connect', function () {
   connected = true;
-
-  console.log('connect');
 
   initFakeEvents();
 });

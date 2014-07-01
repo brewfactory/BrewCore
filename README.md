@@ -30,12 +30,7 @@ You need to flash your SparkCore with the [spark-core-pid-temperature][5] frimwa
 
 *You can use it with a mocked device in the following way:*
 
-    // Change the 
-    var SparkCore = require('./SparkCore');
-    
-    // line in the "/core/device/index.js"
-    // to 
-    var SparkCore = require('./SparkCoreMock');
+```MOCK=spark npm start```
 
 Install
 -------
@@ -64,6 +59,10 @@ npm start
 or
 ```
 node --harmony app.js
+```
+you can mock the SparkCore the following way:
+```
+MOCK=spark npm start
 ```
 
 // TODO
