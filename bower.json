@@ -12,7 +12,9 @@
     "bootstrap": "~3.0.3",
     "bootstrap-timepicker": "~0.2.6",
     "socket.io-client": "~1.0.6",
-    "angular-socket-io": "~0.6.0"
+    "angular-socket-io": "~0.6.0",
+    "chartjs": "~0.2.0",
+    "angles": "*"
   },
   "devDependencies": {
     "angular-mocks": "1.2.15",
