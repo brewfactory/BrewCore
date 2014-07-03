@@ -13,7 +13,7 @@ angular.module('Notification', [])
         title: '=',
         text: '='
       },
-      link: function ($scope, element, attrs) {
+      link: function ($scope, element) {
         var
           playSound,
           audioElement;
