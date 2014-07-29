@@ -74,6 +74,17 @@ exports.getActual = function () {
 
 
 /*
+ * Get point
+ *
+ * @method getPoint
+ * @return {Number}
+ */
+exports.getPoint = function () {
+  return point;
+};
+
+
+/*
  * Set point
  *
  * @method setPoint
