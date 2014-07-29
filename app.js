@@ -39,7 +39,7 @@ else if (process.env.NODE_ENV === 'test') {
   nconf.file(path.join(__dirname, 'config/test.json'));
 }
 else {
-  nconf.file(path.join(__dirname, 'config/myConfig.json'));
+  nconf.file(path.join(__dirname, 'config/dev.json'));
 }
 
 mongoose.connect(nconf.get('mongo:connect'));
