@@ -64,32 +64,32 @@ exports.setCoreEmitter = function (emitter) {
 
   // Brew
   emitter.on('brew:changed', function (data) {
-    exports.emit('brew:changed', data);
+    exports.emit('brew_changed', data);
   });
 
   emitter.on('brew:ended', function (data) {
-    exports.emit('brew:ended', data);
+    exports.emit('brew_ended', data);
   });
 
   emitter.on('brew:status', function (data) {
-    exports.emit('brew:status', data);
+    exports.emit('brew_status', data);
   });
 
   emitter.on('brew:phase', function (data) {
-    exports.emit('brew:phase', data);
+    exports.emit('brew_phase', data);
   });
 
 
   // Temperature
   emitter.on('temperature:changed', function (data) {
     last.temp = data;
-    exports.emit('temperature:changed', data);
+    exports.emit('temperature_changed', data);
   });
 
 
   // PWM
   emitter.on('pwm:changed', function (data) {
     last.pwm = data;
-    exports.emit('pwm:changed', data);
+    exports.emit('pwm_changed', data);
   });
 };
