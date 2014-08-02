@@ -12,6 +12,21 @@ var last = {
 };
 var io;
 
+var EVENT = {
+  BREW: {
+    CHANGED: 'brew_changed',
+    ENDED: 'brew_ended',
+    STATUS: 'brew_status',
+    PHASE: 'brew_phase'
+  },
+  TEMP: {
+    CHANGED: 'temperature_changed'
+  },
+  PWM: {
+    CHANGED: 'pwm_changed'
+  }
+};
+
 
 /*
  * Initialize
@@ -23,9 +38,9 @@ exports.init = function (_io) {
   io = _io;
 
   io.on('connect', function () {
-    exports.emit('brew:changed', core.brew.get());
-    exports.emit('temperature:changed', last.temp);
-    exports.emit('pwm:changed', last.pwm);
+    exports.emit(EVENT.BREW.CHANGED, core.brew.get());
+    exports.emit(EVENT.TEMP.CHANGED, last.temp);
+    exports.emit(EVENT.PWM.CHANGED, last.pwm);
   });
 };
 
@@ -64,32 +79,32 @@ exports.setCoreEmitter = function (emitter) {
 
   // Brew
   emitter.on('brew:changed', function (data) {
-    exports.emit('brew_changed', data);
+    exports.emit(EVENT.BREW.CHANGED, data);
   });
 
   emitter.on('brew:ended', function (data) {
-    exports.emit('brew_ended', data);
+    exports.emit(EVENT.BREW.ENDED, data);
   });
 
   emitter.on('brew:status', function (data) {
-    exports.emit('brew_status', data);
+    exports.emit(EVENT.BREW.STATUS, data);
   });
 
   emitter.on('brew:phase', function (data) {
-    exports.emit('brew_phase', data);
+    exports.emit(EVENT.BREW.PHASE, data);
   });
 
 
   // Temperature
   emitter.on('temperature:changed', function (data) {
     last.temp = data;
-    exports.emit('temperature_changed', data);
+    exports.emit(EVENT.TEMP.CHANGED, data);
   });
 
 
   // PWM
   emitter.on('pwm:changed', function (data) {
     last.pwm = data;
-    exports.emit('pwm_changed', data);
+    exports.emit(EVENT.PWM.CHANGED, data);
   });
 };
