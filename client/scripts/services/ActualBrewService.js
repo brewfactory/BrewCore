@@ -24,7 +24,7 @@ angular.module('brewpiApp')
      * Socket
      *
      */
-    socket.on('brew:changed', function (_actualBrew) {
+    socket.on('brew_changed', function (_actualBrew) {
       actualBrew = _actualBrew;
       resolved = true;
       deferred.resolve(actualBrew);

@@ -166,26 +166,26 @@ angular.module('brewpiApp')
      */
 
     // Temperature changed
-    socket.on('temperature:changed', function (data) {
+    socket.on('temperature_changed', function (data) {
       $scope.temp.value = data;
     });
 
 
     // PWM changed
-    socket.on('pwm:changed', function (data) {
+    socket.on('pwm_changed', function (data) {
       $scope.pwm.actual = data;
     });
 
 
     // Phase ended
-    socket.on('brew:phase', function (data) {
+    socket.on('brew_phase', function (data) {
       if (data && data.status === 'ended') {
         ($scope.phaseChanged || angular.noop)();
       }
     });
 
     // Brew changed
-    socket.on('brew:changed', brewUpdateHandle);
+    socket.on('brew_changed', brewUpdateHandle);
 
 
     /*
