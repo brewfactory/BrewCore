@@ -5,11 +5,12 @@ SparkCore edition of the [Brewberry][1] homebrew solution.
 
 What is this?
 -------------
-[SparkCore][2] powered BIAB brewing system. Brew you own beer.
+[SparkCore][2] powered BIAB brewing system. Brew your own beer.
 
  - You can set and schedule the temperature steps
  - Collect logs from your brew into a MongoDB
  - Visualize your previous brew logs
+ - Mobile client what you can find here (BrewMobile)[https://github.com/brewfactory/BrewMobile]
 
 **The front-end:**
 
