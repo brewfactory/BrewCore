@@ -10,7 +10,7 @@ What is this?
  - You can set and schedule the temperature steps
  - Collect logs from your brew into a MongoDB
  - Visualize your previous brew logs
- - Mobile client what you can find here (BrewMobile)[https://github.com/brewfactory/BrewMobile]
+ - iOS client what you can find here [BrewMobile](https://github.com/brewfactory/BrewMobile)
 
 **The front-end:**
 
