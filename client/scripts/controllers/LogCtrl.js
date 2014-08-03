@@ -31,34 +31,35 @@ angular.module('brewpiApp')
     $scope.brews = [];
     $scope.brew = null;
 
-    $scope.chart = {};
+    $scope.chart = {
 
-    // temp chart
-    $scope.chart.temp = {
-      labels: [],
-      datasets: [
-        {
-          fillColor: 'rgba(37,190,223,0.1)',
-          strokeColor: '#25bedf',
-          pointColor: 'rgba(151,187,205,0)',
-          pointStrokeColor: '#25bedf',
-          data: []
-        }
-      ]
-    };
+      // temp chart
+      temp: {
+        labels: [],
+        datasets: [
+          {
+            fillColor: 'rgba(37,190,223,0.1)',
+            strokeColor: '#25bedf',
+            pointColor: 'rgba(151,187,205,0)',
+            pointStrokeColor: '#25bedf',
+            data: []
+          }
+        ]
+      },
 
-    // pwm chart
-    $scope.chart.pwm = {
-      labels: [],
-      datasets: [
-        {
-          fillColor: 'rgba(225,18,71,0.1)',
-          strokeColor: '#da586d',
-          pointColor: 'rgba(225,18,71,0)',
-          pointStrokeColor: '#da586d',
-          data: []
-        }
-      ]
+      // pwm chart
+      pwm: {
+        labels: [],
+        datasets: [
+          {
+            fillColor: 'rgba(225,18,71,0.1)',
+            strokeColor: '#da586d',
+            pointColor: 'rgba(225,18,71,0)',
+            pointStrokeColor: '#da586d',
+            data: []
+          }
+        ]
+      }
     };
 
     // brews
@@ -67,11 +68,7 @@ angular.module('brewpiApp')
 
       if ($scope.brews[0]) {
         $scope.brew = $scope.brews[0];
-      }
-    });
 
-    $scope.$watch('brew', function (brew) {
-      if (brew) {
         findBrew();
       }
     });
@@ -83,6 +80,7 @@ angular.module('brewpiApp')
      * @method findBrew
      */
     findBrew = function findBrew() {
+
       LogService.find({
         name: $scope.brew.name,
         from: $scope.brew.from,
