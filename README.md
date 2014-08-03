@@ -3,6 +3,9 @@ BrewCore
 
 SparkCore edition of the [Brewberry][1] homebrew solution.
 
+**DEMO: [brewcore-demo.herokuapp.com](brewcore-demo.herokuapp.com)**
+
+
 What is this?
 -------------
 [SparkCore][2] powered BIAB brewing system. Brew your own beer.
