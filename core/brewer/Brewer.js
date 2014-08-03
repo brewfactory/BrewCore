@@ -90,9 +90,6 @@ resetActualBrew = function () {
   _actualPhase = null;
   _prevPhase = null;
 
-  // Emit brew ended
-  coreEvent.brewer.ended();
-
   brewChanged();
 };
 
@@ -115,9 +112,6 @@ endBrew = function () {
 
   // Set point temp
   temperature.setPointToInactive();
-
-  // Emit brew change
-  brewChanged();
 };
 
 
@@ -153,7 +147,7 @@ brewChanged = function () {
  * Pause the actual phase and save the state for restore
  * Restore paused state
  *
- * @method resetActualBrew
+ * @method setPaused
  * @return {Boolean} state of actual brew
  */
 exports.setPaused = function () {
