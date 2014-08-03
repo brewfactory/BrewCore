@@ -90,9 +90,6 @@ resetActualBrew = function () {
   _actualPhase = null;
   _prevPhase = null;
 
-  // Emit brew ended
-  coreEvent.brewer.ended();
-
   brewChanged();
 };
 
