@@ -3,7 +3,7 @@ BrewCore
 
 SparkCore edition of the [Brewberry][1] homebrew solution.
 
-**DEMO: [brewcore-demo.herokuapp.com](brewcore-demo.herokuapp.com)**
+**DEMO: [http://brewcore-demo.herokuapp.com](http://brewcore-demo.herokuapp.com)**
 
 
 What is this?
