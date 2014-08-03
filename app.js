@@ -42,7 +42,7 @@ else {
   nconf.file(path.join(__dirname, 'config/dev.json'));
 }
 
-mongoose.connect(nconf.get('mongo:connect'));
+mongoose.connect(process.env.MONGOHQ_URL || nconf.get('mongo:connect'));
 
 PORT = process.env.PORT || nconf.get('port');
 
