@@ -22,6 +22,7 @@
     "angular-socket.io-mock": "~0.0.2"
   },
   "resolutions": {
-    "bootstrap": "~3.0.3"
+    "bootstrap": "~3.0.3",
+    "chartjs": "1.0.1-beta.2"
   }
 }
