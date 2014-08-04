@@ -1,20 +1,21 @@
 /*
  * Main controller
  *
- * @controller MainCtrl
  */
 
-angular.module('brewpiApp')
-  .controller('MainCtrl', function ($scope, $log, socket, BrewService, ActualBrewService) {
-    'use strict';
+(function () {
+  'use strict';
 
-    var now = new Date();
+  /*
+   * @name Main controller
+   *
+   * @ngInject
+   */
+  function MainCtrl ($scope, socket, BrewService, ActualBrewService) {
 
-
-    /*
-     * Scope model
-     *
-     */
+    $scope.form = {
+      isStartTime: false
+    };
 
     $scope.phasesDuration = 0;
     $scope.actualBrew = null;
@@ -38,30 +39,15 @@ angular.module('brewpiApp')
     // brew
     $scope.brew = {
       name: null,
-      startHour: now.getHours() + ':' + now.getMinutes(),
-      startTime: now,
+      startTime: new Date(),
       phases: []
     };
 
 
     /*
-     * Scope watch
+     * @name Update phase duration
      *
-     */
-    $scope.$watch('brew.startHour', function changed(value) {
-      var hour = value.split(':')[0];
-      var min = value.split(':')[1];
-
-      $scope.brew.startTime.setHours(hour);
-      $scope.brew.startTime.setMinutes(min);
-      $scope.brew.startTime.setSeconds(0);
-      $scope.brew.startTime.setMilliseconds(0);
-
-    });
-
-
-    /*
-     * Update phase duration
+     * @method updatePhasesDuration
      *
      */
     function updatePhasesDuration () {
@@ -74,7 +60,7 @@ angular.module('brewpiApp')
 
 
     /*
-     * Synchronize
+     * @name Synchronize
      *
      * @method synchronize
      */
@@ -98,7 +84,7 @@ angular.module('brewpiApp')
 
 
     /*
-     * Remove phase
+     * @name Remove phase
      *
      * @method removePhase
      * @param {Number} key
@@ -109,7 +95,7 @@ angular.module('brewpiApp')
 
 
     /*
-     * Add phase
+     * @name Add phase
      *
      * @method addPhase
      */
@@ -129,7 +115,7 @@ angular.module('brewpiApp')
 
 
     /*
-     * Brew update handle
+     * @name Brew update handle
      *
      * @method brewUpdateHandle
      * @param {Object} brew
@@ -141,7 +127,7 @@ angular.module('brewpiApp')
 
 
     /*
-     * Stop
+     * @name Stop
      *
      * @method stop
      */
@@ -151,7 +137,7 @@ angular.module('brewpiApp')
 
 
     /*
-     * Pause
+     * @name Pause
      *
      * @method pause
      */
@@ -161,7 +147,7 @@ angular.module('brewpiApp')
 
 
     /*
-     * Socket
+     * name Socket
      *
      */
 
@@ -189,7 +175,7 @@ angular.module('brewpiApp')
 
 
     /*
-     * Initialize
+     * @name Initialize
      *
      * @method init
      */
@@ -201,5 +187,11 @@ angular.module('brewpiApp')
 
     // Initialize
     init();
+  }
 
-  });
+
+  // Attach to the app
+  angular.module('brewpiApp')
+    .controller('MainCtrl', MainCtrl);
+
+} ());
