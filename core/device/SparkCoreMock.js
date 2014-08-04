@@ -95,6 +95,10 @@ function calculateTemp(_pwm, date) {
     // Delta Temperature in the k. step
     deltaT = (pwm - (temp - Ta) / Rth) * deltaTime / (cWater * m);
     temp += deltaT;
+
+    if(temp > 100) {
+      temp = 100;
+    }
   }
 
   dt = new Date();

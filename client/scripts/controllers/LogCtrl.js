@@ -1,12 +1,18 @@
 /*
  * Log controller
  *
- * @controller LogCtrl
  */
 
-angular.module('brewpiApp')
-  .controller('LogCtrl', function ($scope, LogService) {
-    'use strict';
+(function () {
+  'use strict';
+
+
+  /*
+   * @name Log controller
+   *
+   * @ngInject
+   */
+  function LogCtrl ($scope, LogService) {
 
     var findBrew;
 
@@ -75,7 +81,7 @@ angular.module('brewpiApp')
 
 
     /*
-     * Find brew
+     * @name Find brew
      *
      * @method findBrew
      */
@@ -139,4 +145,10 @@ angular.module('brewpiApp')
         }
       });
     };
-  });
+  }
+
+  // Attach to the app
+  angular.module('brewpiApp')
+    .controller('LogCtrl', LogCtrl);
+
+} ());
