@@ -19,5 +19,8 @@
     "angular-mocks": "1.2.21",
     "angular-scenario": "1.2.21",
     "angular-socket.io-mock": "^0.0.2"
+  },
+  "resolutions": {
+    "angular": "~1.2.22"
   }
 }
