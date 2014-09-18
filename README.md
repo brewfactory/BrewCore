@@ -5,6 +5,8 @@ SparkCore edition of the [Brewberry][1] homebrew solution.
 
 **DEMO: [http://brewcore-demo.herokuapp.com](http://brewcore-demo.herokuapp.com)**
 
+Read more about the project [here](http://blog.risingstack.com/brewfactory-full-stack-homebrew-with-iot/).
+
 
 What is this?
 -------------
