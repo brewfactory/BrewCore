@@ -15,6 +15,7 @@
     "bower": "^1.3.5",
     "co-thunkify": "0.0.0",
     "koa": "^0.8.0",
+    "koa-cors": "0.0.13",
     "koa-etag": "^1.3.0",
     "koa-parse-json": "0.0.2",
     "koa-qs": "^1.0.0",

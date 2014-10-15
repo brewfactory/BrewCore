@@ -13,6 +13,7 @@ var serve = require('koa-static');
 var router = require('koa-router');
 var etag = require('koa-etag');
 var body = require('koa-parse-json');
+var cors = require('koa-cors');
 
 var nconf = require('nconf');
 var mongoose = require('mongoose');
@@ -51,6 +52,7 @@ PORT = process.env.PORT || nconf.get('port');
  * Configuring middlewares
  */
 
+app.use(cors());
 require('koa-qs')(app);
 app.use(etag());
 app.use(body());
@@ -75,9 +77,9 @@ app.use(serve(process.env.CLIENT_DIR || nconf.get('client')));
     this.body = { name: pkg.name, version: pkg.version };
   });
 
-  app.post('/brew', brew.set);
-  app.get('/brew/stop', brew.stop);
-  app.get('/brew/pause', brew.pause);
+  app.post('/api/brew', brew.set);
+  app.patch('/api/brew/stop', brew.stop);
+  app.patch('/api/brew/pause', brew.pause);
 
 // logs
   app.get('/api/logs/brews', log.findBrew);

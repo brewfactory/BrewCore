@@ -8,9 +8,9 @@ angular.module('brewpiApp')
   .factory('BrewService', function ($resource) {
     'use strict';
 
-    return $resource('brew/:id/:action/', { id: '@id' }, {
+    return $resource('api/brew/:id/:action/', { id: '@id' }, {
       save: { method: 'POST' },
-      stop: { method: 'GET', params: { action: 'stop' }},
-      pause: { method: 'GET', params: { action: 'pause' }}
+      stop: { method: 'PATCH', params: { action: 'stop' }},
+      pause: { method: 'PATCH', params: { action: 'pause' }}
     });
   });
