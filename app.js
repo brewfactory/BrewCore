@@ -52,7 +52,9 @@ PORT = process.env.PORT || nconf.get('port');
  * Configuring middlewares
  */
 
-app.use(cors());
+app.use(cors({
+  methods: ['GET', 'PUT', 'POST', 'PATCH']
+}));
 require('koa-qs')(app);
 app.use(etag());
 app.use(body());
