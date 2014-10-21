@@ -1,10 +1,10 @@
 <div class="row">
     <div class="col-lg-4">
         <div class="form-group">
-            <select ng-model="brew" class="form-control"
-                    ng-options="(b.name + ' (' +  (b.from | date:'yyyy-MM-dd') + ')') for b in brews">
-
-                    </select>
+            <select ng-change="onBrewChanged()"
+                    ng-model="brew"
+                    ng-options="(b.name + ' (' +  (b.startTime | date:'yyyy-MM-dd') + ')') for b in brews | orderBy: b.startTime()"
+                    class="form-control"></select>
         </div>
     </div>
 </div>

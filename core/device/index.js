@@ -8,8 +8,9 @@ var LOG = 'Device';
 
 var mocked = false;
 var SparkCore;
+var latestPWM;
 
-if(process.env.MOCK && process.env.MOCK.indexOf('spark') > -1) {
+if (process.env.MOCK && process.env.MOCK.indexOf('spark') > -1) {
   mocked = true;
   SparkCore = require('./SparkCoreMock');
 } else {
@@ -18,20 +19,38 @@ if(process.env.MOCK && process.env.MOCK.indexOf('spark') > -1) {
 
 
 /*
+ * Get pwm
+ *
+ * @method getPWM
+ * @return {Number}
+ */
+function getPWM() {
+  return latestPWM;
+}
+
+
+/*
  * Initialize device
  *
  * @method init
  */
-exports.init = function () {
-  if(mocked === true) {
+function init() {
+  if (mocked === true) {
     Logger.info('Use mocked device', LOG);
   } else {
     Logger.info('Use real device', LOG);
   }
 
   SparkCore.init();
-};
+}
 
 
+SparkCore.coreEmitter.on('pwmInfo', function (info) {
+  latestPWM = info.data;
+});
+
+
+exports.init = init;
+exports.getPWM = getPWM;
 exports.coreEmitter = SparkCore.coreEmitter;
 exports.setPoint = SparkCore.setPoint;

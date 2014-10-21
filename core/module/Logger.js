@@ -8,7 +8,6 @@
 
 var winston = require('winston');
 
-var LogModel = require('../../schema/Log');
 var LOG = 'LoggerCore';
 
 var CONFIG = {
@@ -35,13 +34,9 @@ var CONFIG = {
     debug: 'blue',
     error: 'red',
     silent: 'white'
-  },
-
-  isProduction: false,
-  statusFrequency: 30000
+  }
 };
 
-var lastStatusReport = new Date();
 var lastWaitingReports = [];
 
 var Logger;
@@ -59,8 +54,6 @@ exports.init = function (options) {
   options.consoleLevel = options.consoleLevel || 'silly';
   options.mode = options.mode || 'normal';
   CONFIG.statusFrequency = options.logStatusFrequency || CONFIG.statusFrequency;
-
-  CONFIG.isProduction = options.mode === 'normal';
 
   // Init winston logger
   if (!Logger) {
@@ -84,8 +77,7 @@ exports.init = function (options) {
   );
 
   Logger.info(LOG + ' is successfully initialized', LOG, {
-    mode: options.mode,
-    isProduction: CONFIG.isProduction
+    mode: options.mode
   });
 };
 
@@ -197,51 +189,5 @@ exports.wait = function () {
   if (!lastWaitingReports[msg] || (now.getTime() - lastWaitingReports[msg].getTime() >= frequency)) {
     lastWaitingReports[msg] = now;
     exports.silly.call(this, args);
-  }
-};
-
-
-/**
- * Status of the system
- * save to database with mongoose
- *
- * @method status
- * @param {Number} temperature
- * @param {Number} pwm
- * @param {String} name
- */
-exports.status = function (temperature, pwm, name) {
-  var now = new Date();
-  var logAdd;
-  var log;
-
-  if (now.getTime() - lastStatusReport.getTime() >= CONFIG.statusFrequency) {
-    lastStatusReport = new Date();
-
-    // additional
-    logAdd = {
-      level: 'status',
-      message: 'update',
-      add: {
-        name: name,
-        temp: temperature,
-        pwm: pwm
-      }
-    };
-
-    if (CONFIG.isProduction === true) {
-
-      log = new LogModel(logAdd);
-
-      log.save(function save(err) {
-        if (err) {
-          exports.error('Log save error', 'Logger', err);
-        }
-      });
-
-    } else {
-      exports.info('status', 'logger', logAdd);
-    }
-
   }
 };

@@ -79,13 +79,13 @@ app.use(serve(process.env.CLIENT_DIR || nconf.get('client')));
     this.body = { name: pkg.name, version: pkg.version };
   });
 
-  app.post('/api/brew', brew.set);
+  app.post('/api/brew', brew.create);
   app.patch('/api/brew/stop', brew.stop);
   app.patch('/api/brew/pause', brew.pause);
 
 // logs
-  app.get('/api/logs/brews', log.findBrew);
-  app.get('/api/logs', log.find);
+  app.get('/api/brew/log', log.find);
+  app.get('/api/brew/log/:id', log.findOne);
 
 }
 

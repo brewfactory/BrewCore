@@ -78,6 +78,7 @@ resetActualBrew = function () {
 
   // Reset actual brew
   _actualBrew = {
+    id: null,
     name: null,
     startTime: null,
     jobs: [],
@@ -229,6 +230,7 @@ exports.setBrew = function (params) {
   endBrew();
 
   // set actual
+  _actualBrew.id = params.id;
   _actualBrew.name = params.name;
   _actualBrew.phases = params.phases;
   _actualBrew.startTime = new Date(params.startTime);

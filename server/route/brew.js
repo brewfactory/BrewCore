@@ -5,25 +5,49 @@
  **/
 
 var core = require('../../core');
+var Brew = require('../../schema/Brew');
 
 
 /**
- * Set
+ * Create
  *
- * @method set
+ * @method create
  * @param {Function} next
  */
-exports.set = function *(next) {
+exports.create = function *(next) {
   var body = this.request.body;
-
-  var name = body.name || '';
+  var name = body.name;
   var startTime = body.startTime || new Date();
   var phases = body.phases || [];
+  var brew;
+
+  if (!name) {
+    this.throw(403, 'Name is required');
+  }
+
+  // Create brew
+  try {
+    brew = yield Brew
+      .create({
+        name: name,
+        phases: phases,
+        startTime: startTime
+      });
+  } catch (err) {
+    console.error(err);
+    this.throw(500);
+  }
 
   // Set new Brew
   core.brew.set({
+    id: brew._id,
     name: name,
-    phases: phases,
+    phases: phases.map(function (phase) {
+      return {
+        min: phase.min,
+        temp: phase.temp
+      };
+    }),
     startTime: startTime
   });
 
