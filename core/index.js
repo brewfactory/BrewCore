@@ -15,6 +15,8 @@ var temperature = require('./temperature');
 var brewer = require('./brewer');
 var device = require('./device');
 
+var Status = require('./module/Status');
+
 
 /*
 
@@ -30,6 +32,7 @@ function init () {
   brewer.init();
 
   Logger.info('Init', LOG);
+  Status.init();
 }
 
 exports.emitter = Emitter;

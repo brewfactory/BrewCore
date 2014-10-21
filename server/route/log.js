@@ -4,39 +4,10 @@
  * @routing log
  **/
 
-var thunkify = require('co-thunkify');
-
 var Logger = require('../module/Logger');
 var LOG = 'log-router';
 
-var Log = require('../../schema/Log');
-
-var findBrews = thunkify(Log.findBrews);
-
-
-/**
- * Find brew
- *
- * @method findBrew
- * @param {Function} next
- */
-exports.findBrew = function *(next) {
-  var brews;
-
-  // Query database
-  try {
-    brews = yield findBrews();
-  } catch (err) {
-    Logger.error('find: DB error', LOG, { err: err });
-    this.throw(500, 'DB error');
-  }
-
-  // Res
-  yield next;
-  this.body = {
-    brews: brews
-  };
-};
+var Brew = require('../../schema/Brew');
 
 
 /**
@@ -45,22 +16,34 @@ exports.findBrew = function *(next) {
  * @method find
  * @param {Function} next
  */
-module.exports.find = function *(next) {
-  var params = {
-    name: this.query.name,
-    from: this.query.from,
-    to: this.query.to
+exports.find = function *(next) {
+  var include = this.query.include;
+  var name = this.query.name;
+  var startTime = this.query.startTime;
+  var query = {};
+  var queryInclude = {
+    name: 1,
+    startTime: 1
   };
 
   var brews;
 
-  if(!params.name || !params.from || !params.to) {
-    this.throw(400, 'Invalid query');
+  if(name) {
+    query.name = name;
+  }
+
+  if(startTime) {
+    startTime.name = name;
+  }
+
+  // Include phases
+  if(include && include.indexOf('phases') > -1) {
+    queryInclude.phases = 1;
   }
 
   // Query database
   try {
-    brews = yield Log.findOneBrew(params);
+    brews = yield Brew.find(query, queryInclude).exec();
   } catch (err) {
     Logger.error('find: DB error', LOG, { err: err });
     this.throw(500, 'DB error');
@@ -72,3 +55,34 @@ module.exports.find = function *(next) {
     brews: brews
   };
 };
+
+
+/**
+ * Find one
+ *
+ * @method findOne
+ * @param {Function} next
+ */
+exports.findOne = function *(next) {
+  var id = this.params.id;
+  var brew;
+
+  if(!id) {
+    this.throw(500, 'Id is required');
+  }
+
+  // Query database
+  try {
+    brew = yield Brew.findOne({ _id: id }).exec();
+  } catch (err) {
+    Logger.error('findOne: DB error', LOG, { err: err });
+    this.throw(500, 'DB error');
+  }
+
+  // Res
+  yield next;
+  this.body = {
+    brews: brew
+  };
+};
+
