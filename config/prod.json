@@ -1,6 +1,4 @@
 {
-  "client": "client",
-
   "port": 3000,
 
   "mongo": {

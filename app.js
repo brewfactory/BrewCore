@@ -14,6 +14,7 @@ var router = require('koa-router');
 var etag = require('koa-etag');
 var body = require('koa-parse-json');
 var cors = require('koa-cors');
+var send = require('koa-send');
 
 var nconf = require('nconf');
 var mongoose = require('mongoose');
@@ -23,10 +24,13 @@ var path = require('path');
 var Logger = require('./server/module/Logger');
 
 var Socket = require('./server/module/Socket');
+var brewUI = require('brew-ui');
+var routeHelper = require('./server/module/routeHelper');
 var app = koa();
 
 var server;
 var PORT;
+var CLIENT;
 
 
 /**
@@ -46,6 +50,7 @@ else {
 mongoose.connect(process.env.MONGOHQ_URL || nconf.get('mongo:connect'));
 
 PORT = process.env.PORT || nconf.get('port');
+CLIENT = path.join(__dirname, process.env.CLIENT_DIR || 'client');
 
 
 /**
@@ -62,7 +67,26 @@ app.use(router(app));
 
 Logger.init();
 
-app.use(serve(process.env.CLIENT_DIR || nconf.get('client')));
+app.use(serve(CLIENT));
+
+
+/* *
+ * React page middleware
+ */
+
+app.use(function *(next) {
+  yield next;
+
+  var routeConfig = brewUI.routes;
+
+  // Is react route?
+  if (routeHelper.isReactRoute(routeConfig, {
+      path: this.path,
+      method: this.method
+    })) {
+    yield send(this, path.join(CLIENT, 'index.html'));
+  }
+});
 
 
 /**
@@ -86,7 +110,6 @@ app.use(serve(process.env.CLIENT_DIR || nconf.get('client')));
 // logs
   app.get('/api/brew/log', log.find);
   app.get('/api/brew/log/:id', log.findOne);
-
 }
 
 
@@ -95,13 +118,12 @@ app.use(serve(process.env.CLIENT_DIR || nconf.get('client')));
  */
 
 {
-  var brewUI = require('brew-ui');
-
   server = require('http').Server(app.callback());
 
+  Logger.info('Start build UI');
   brewUI.build(path.join(__dirname, './client'))
     .then(function () {
-      Logger.info('Start build UI');
+      Logger.info('UI is built successfully');
 
       server.listen(PORT, function () {
         Logger.info('Server is listening on ' + PORT, 'app', {
@@ -110,7 +132,7 @@ app.use(serve(process.env.CLIENT_DIR || nconf.get('client')));
         });
       });
     }).catch(function (err) {
-      Logger.error('UI build error', { err: err });
+      Logger.error('UI build error', {err: err});
       process.exit(0);
     });
 }
