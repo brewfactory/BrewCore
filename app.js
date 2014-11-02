@@ -76,7 +76,7 @@ app.use(serve(process.env.CLIENT_DIR || nconf.get('client')));
 
   app.get('/api', function *(next) {
     yield next;
-    this.body = { name: pkg.name, version: pkg.version };
+    this.body = {name: pkg.name, version: pkg.version};
   });
 
   app.post('/api/brew', brew.create);
@@ -94,13 +94,26 @@ app.use(serve(process.env.CLIENT_DIR || nconf.get('client')));
  * Fire up the server
  */
 
-server = require('http').Server(app.callback());
-server.listen(PORT, function () {
-  Logger.info('Server is listening on ' + PORT, 'app', {
-    name: pkg.name,
-    version: pkg.version
-  });
-});
+{
+  var brewUI = require('brew-ui');
+
+  server = require('http').Server(app.callback());
+
+  brewUI.build(path.join(__dirname, './client'))
+    .then(function () {
+      Logger.info('Start build UI');
+
+      server.listen(PORT, function () {
+        Logger.info('Server is listening on ' + PORT, 'app', {
+          name: pkg.name,
+          version: pkg.version
+        });
+      });
+    }).catch(function (err) {
+      Logger.error('UI build error', { err: err });
+      process.exit(0);
+    });
+}
 
 
 /**
