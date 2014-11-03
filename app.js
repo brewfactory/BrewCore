@@ -24,7 +24,7 @@ var path = require('path');
 var Logger = require('./server/module/Logger');
 
 var Socket = require('./server/module/Socket');
-var brewUI = require('brew-ui');
+var BrewUI = require('brew-ui');
 var routeHelper = require('./server/module/routeHelper');
 var app = koa();
 
@@ -50,7 +50,7 @@ else {
 mongoose.connect(process.env.MONGOHQ_URL || nconf.get('mongo:connect'));
 
 PORT = process.env.PORT || nconf.get('port');
-CLIENT = path.join(__dirname, process.env.CLIENT_DIR || 'client');
+CLIENT = process.env.CLIENT_DIR || BrewUI.getStaticPath();
 
 
 /**
@@ -77,7 +77,7 @@ app.use(serve(CLIENT));
 app.use(function *(next) {
   yield next;
 
-  var routeConfig = brewUI.routes;
+  var routeConfig = BrewUI.routes;
 
   // Is react route?
   if (routeHelper.isReactRoute(routeConfig, {
@@ -117,25 +117,13 @@ app.use(function *(next) {
  * Fire up the server
  */
 
-{
-  server = require('http').Server(app.callback());
-
-  Logger.info('Start build UI');
-  brewUI.build(path.join(__dirname, './client'))
-    .then(function () {
-      Logger.info('UI is built successfully');
-
-      server.listen(PORT, function () {
-        Logger.info('Server is listening on ' + PORT, 'app', {
-          name: pkg.name,
-          version: pkg.version
-        });
-      });
-    }).catch(function (err) {
-      Logger.error('UI build error', {err: err});
-      process.exit(0);
-    });
-}
+server = require('http').Server(app.callback());
+server.listen(PORT, function () {
+  Logger.info('Server is listening on ' + PORT, 'app', {
+    name: pkg.name,
+    version: pkg.version
+  });
+});
 
 
 /**
