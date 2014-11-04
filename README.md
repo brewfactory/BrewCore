@@ -31,7 +31,7 @@ Used technologies
 * MongoDB
 * Isomorphic
 
- This project uses: https://github.com/brewfactory/BrewUI
+This project uses: https://github.com/brewfactory/BrewUI
 
 The SparkCore side
 -----------------
