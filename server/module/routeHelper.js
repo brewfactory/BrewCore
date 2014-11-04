@@ -1,4 +1,11 @@
+/*
+ * Route helper
+ *
+ * @modile routeHelper
+ */
+
 var _ = require('lodash');
+var serialize = require('serialize-javascript');
 
 
 /*
@@ -18,4 +25,25 @@ function isReactRoute (routeConfig, _route) {
   });
 }
 
+
+/*
+ * Share state
+ *
+ * @method shareState
+ * @param {Object} application
+ * @return {String}
+ */
+function shareState(application) {
+  var state = application.context.dehydrate();
+  var serializedState = serialize(state);
+
+  return  '(function (root) {\n' +
+      'root.App || (root.App = {});\n' +
+      'root.App.Context = ' + serializedState +
+      ';\n }(this));';
+}
+
+
+// Interface
 exports.isReactRoute = isReactRoute;
+exports.shareState = shareState;
