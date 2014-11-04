@@ -59,16 +59,15 @@ mongoose.connect(process.env.MONGOHQ_URL || nconf.get('mongo:connect'));
 PORT = process.env.PORT || nconf.get('port');
 CLIENT = process.env.CLIENT_DIR || BrewUI.getStaticPath();
 
-render(app, {
-  root: CLIENT,
-  layout: 'index',
-  viewExt: 'html'
-});
-
-
 /**
  * Configuring middlewares
  */
+
+render(app, {
+  root: CLIENT,
+  layout: 'layout',
+  viewExt: 'html'
+});
 
 app.use(cors({
   methods: ['GET', 'PUT', 'POST', 'PATCH']
@@ -86,7 +85,7 @@ app.use(serve(CLIENT));
 // TODO register fetcher
 // Register fetchers
 //BrewUI.Fetcher.register('brew', require('./fetchers/brew'));
-//BrewUI.Fetcher.register('log', require('./fetchers/log'));
+BrewUI.Fetcher.register('log', require('./server/fetcher/log'));
 
 /* *
  * React page middleware
@@ -117,11 +116,13 @@ app.use(function *() {
     this.throw(500, 'Error happened.');
   }
 
+  yield application.init();
+
   // React render
-  renderedHtml = BrewUI.React.renderComponentToString(application.getComponent());
+  renderedHtml = BrewUI.React.renderToString(application.getComponent());
 
   // Render layout with the application state
-  yield this.render('index', {
+  yield this.render('layout', {
     html: renderedHtml,
     state: routeHelper.shareState(application)
   });

@@ -37,10 +37,10 @@ function shareState(application) {
   var state = application.context.dehydrate();
   var serializedState = serialize(state);
 
-  return  '(function (root) {\n' +
+  return  '<script>(function (root) {\n' +
       'root.App || (root.App = {});\n' +
       'root.App.Context = ' + serializedState +
-      ';\n }(this));';
+      ';\n }(this));</script>';
 }
 
 
