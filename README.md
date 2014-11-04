@@ -26,10 +26,10 @@ What is this?
 Used technologies
 -----------------
 
- - Node.js (with KOA and SocketIO)
- - React
- - MongoDB
- - Isomorphic
+* Node.js (with KOA and SocketIO)
+* React
+* MongoDB
+* Isomorphic
 
  This project uses: https://github.com/brewfactory/BrewUI
 
