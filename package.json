@@ -1,7 +1,7 @@
 {
   "name": "BrewCore",
   "version": "1.0.0",
-  "description": "BrewCore brewing system",
+  "description": "BrewCore brewing system.",
   "main": "app.js",
   "scripts": {
     "start": "node --harmony app.js",
@@ -10,6 +10,18 @@
   "authors": [
     "Peter Marton @slashdotpeter"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/brewfactory/BrewCore"
+  },
+  "keywords": [
+    "Homebrew",
+    "Koa",
+    "Node.js",
+    "Isomorphic",
+    "React"
+  ],
+  "license": "MIT",
   "dependencies": {
     "bower": "^1.3.5",
     "brew-ui": "^1.3.0",
