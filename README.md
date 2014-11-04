@@ -26,13 +26,16 @@ What is this?
 Used technologies
 -----------------
 
- - NodeJS (with KOA and SocketIO)
- - AngularJS
+ - Node.js (with KOA and SocketIO)
+ - React
  - MongoDB
+ - Isomorphic
+
+ This project uses: https://github.com/brewfactory/BrewUI
 
 The SparkCore side
 -----------------
-You need to flash your SparkCore with the [spark-core-pid-temperature][5] frimware.
+You need to flash your SparkCore with the [spark-core-pid-temperature][5] firmware.
 
 *You can use it with a mocked device in the following way:*
 
