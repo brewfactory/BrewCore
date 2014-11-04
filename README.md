@@ -76,11 +76,7 @@ MOCK=spark npm start
 
  - cover with tests
  - flash SparkCore from this code
- - make it to Heroku compatible
- - store recipes
  - authentication
- - gulp tasks for the front-end optimization and test runners
- - use BrewUI instead of the bundled Angualar app
 
 
   [1]: https://github.com/brewfactory/Brewberry
