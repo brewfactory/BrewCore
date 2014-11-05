@@ -60,6 +60,38 @@ exports.create = function *(next) {
 
 
 /**
+ * Get
+ *
+ * @method get
+ * @param {Function} next
+ */
+exports.get = function *(next) {
+  var actualBrew = core.brew.get();
+
+  // Res
+  yield next;
+  this.body = {
+    brews: {
+      id: actualBrew.id,
+      name: actualBrew.name,
+      startTime: actualBrew.startTime,
+      phases: actualBrew.phases.map(function (phase) {
+        return {
+          min: phase.min,
+          temp: phase.temp,
+          inProgress: phase.inProgress,
+          tempReached: phase.tempReached,
+          jobEnd: phase.jobEnd
+        };
+      }),
+      inProgress: actualBrew.inProgress,
+      paused: actualBrew.paused
+    }
+  };
+};
+
+
+/**
  * Stop
  *
  * @method stop
