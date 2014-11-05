@@ -70,6 +70,25 @@ exports.emit = function (key, data, socketId) {
 
 
 /*
+ * Brew formatter
+ *
+ * @method brewFormatter
+ * @param {Object} brew
+ * @return {Object}
+ */
+function brewFormatter (brew) {
+  return {
+    id: brew.id,
+    name: brew.name,
+    startTime: brew.startTime,
+    phases: brew.phases,
+    inProgress: brew.inProgress,
+    paused: brew.paused
+  };
+}
+
+
+/*
  * Set core emitter
  *
  * @method setCoreEmitter
@@ -78,20 +97,20 @@ exports.emit = function (key, data, socketId) {
 exports.setCoreEmitter = function (emitter) {
 
   // Brew
-  emitter.on('brew:changed', function (data) {
-    exports.emit(EVENT.BREW.CHANGED, data);
+  emitter.on('brew:changed', function (brew) {
+    exports.emit(EVENT.BREW.CHANGED, brewFormatter(brew));
   });
 
-  emitter.on('brew:ended', function (data) {
-    exports.emit(EVENT.BREW.ENDED, data);
+  emitter.on('brew:ended', function () {
+    exports.emit(EVENT.BREW.ENDED);
   });
 
-  emitter.on('brew:status', function (data) {
-    exports.emit(EVENT.BREW.STATUS, data);
+  emitter.on('brew:status', function (status) {
+    exports.emit(EVENT.BREW.STATUS, status);
   });
 
-  emitter.on('brew:phase', function (data) {
-    exports.emit(EVENT.BREW.PHASE, data);
+  emitter.on('brew:phase', function (phase) {
+    exports.emit(EVENT.BREW.PHASE, phase);
   });
 
 

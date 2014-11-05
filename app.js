@@ -143,6 +143,7 @@ app.use(function *() {
     this.body = {name: pkg.name, version: pkg.version};
   });
 
+  app.get('/api/brew', brew.get);
   app.post('/api/brew', brew.create);
   app.patch('/api/brew/stop', brew.stop);
   app.patch('/api/brew/pause', brew.pause);
