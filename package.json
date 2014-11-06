@@ -1,6 +1,6 @@
 {
   "name": "BrewCore",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "BrewCore brewing system.",
   "main": "app.js",
   "scripts": {
