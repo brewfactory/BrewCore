@@ -1,40 +1,31 @@
-var brewResource = require('../resources/brew');
+var core = require('../../core');
 
 /*
- * Create
+ * Read
  *
- * @method create
- * @param {Object} brew
- * @callback
+ * @method read
  */
-exports.create = function (brew) {
+exports.read = function () {
+  return new Promise(function (resolve) {
+    var actualBrew = core.brew.get();
 
-  // Promise
-  return brewResource.create({ brew: brew });
-};
+    var brew = {
+      id: actualBrew.id,
+      name: actualBrew.name,
+      startTime: actualBrew.startTime,
+      phases: actualBrew.phases.map(function (phase) {
+        return {
+          min: phase.min,
+          temp: phase.temp,
+          inProgress: phase.inProgress,
+          tempReached: phase.tempReached,
+          jobEnd: phase.jobEnd
+        };
+      }),
+      inProgress: actualBrew.inProgress,
+      paused: actualBrew.paused
+    };
 
-
-/*
- * Stop
- *
- * @method stop
- * @callback
- */
-exports.stop = function () {
-
-  // Promise
-  return brewResource.stop();
-};
-
-
-/*
- * Pause
- *
- * @method pause
- * @callback
- */
-exports.pause = function () {
-
-  // Promise
-  return brewResource.pause();
+    resolve(brew);
+  });
 };
