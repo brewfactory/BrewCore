@@ -82,9 +82,8 @@ Logger.init();
 app.use(serve(CLIENT));
 
 
-// TODO register fetcher
 // Register fetchers
-//BrewUI.Fetcher.register('brew', require('./fetchers/brew'));
+BrewUI.Fetcher.register('brew', require('./server/fetcher/brew'));
 BrewUI.Fetcher.register('log', require('./server/fetcher/log'));
 
 /* *
