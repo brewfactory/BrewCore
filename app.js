@@ -161,7 +161,8 @@ server = require('http').Server(app.callback());
 server.listen(PORT, function () {
   Logger.info('Server is listening on ' + PORT, 'app', {
     name: pkg.name,
-    version: pkg.version
+    version: pkg.version,
+    env: process.env.NODE_ENV
   });
 });
 
