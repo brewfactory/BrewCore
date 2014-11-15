@@ -60,7 +60,7 @@ PORT = process.env.PORT || nconf.get('port');
 CLIENT = process.env.CLIENT_DIR || BrewUI.getStaticPath();
 
 /**
- * Configuring middlewares
+ * Configuring middleware
  */
 
 render(app, {
