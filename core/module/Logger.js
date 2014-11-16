@@ -51,7 +51,7 @@ var Logger;
 exports.init = function (options) {
 
   options = options || {};
-  options.consoleLevel = options.consoleLevel || 'silly';
+  options.consoleLevel = options.consoleLevel || 'info';
   options.mode = options.mode || 'normal';
   CONFIG.statusFrequency = options.logStatusFrequency || CONFIG.statusFrequency;
 
