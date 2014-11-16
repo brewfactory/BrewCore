@@ -160,7 +160,7 @@ exports.setPaused = function () {
   coreEvent.brewer.statusChanged(_actualBrew.paused);
 
   // Temp didn't be reached
-  if (_actualPhase.inProgress === true && _actualPhase.tempReached === false) {
+  if (_actualPhase && _actualPhase.inProgress === true && _actualPhase.tempReached === false) {
     if (_actualBrew.paused === true) {
 
       Logger.info('Paused', LOG, {
@@ -180,7 +180,7 @@ exports.setPaused = function () {
   }
 
   // Temp was reached
-  else if (_actualPhase.inProgress === true && _actualPhase.tempReached === true) {
+  else if (_actualPhase && _actualPhase.inProgress === true && _actualPhase.tempReached === true) {
     if (_actualBrew.paused) {
       _actualPhase.pausedAt = new Date();
       _actualPhase.job.cancel();
