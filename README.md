@@ -1,6 +1,8 @@
 BrewCore
 ========
 
+[ ![Codeship Status for brewfactory/BrewCore](https://codeship.com/projects/111a2f30-4fac-0132-6675-12c8946411a5/status)](https://codeship.com/projects/47904)  
+
 SparkCore edition of the [Brewberry][1] homebrew solution.
 
 **DEMO: [http://brewcore-demo.herokuapp.com](http://brewcore-demo.herokuapp.com)**
