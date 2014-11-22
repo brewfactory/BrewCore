@@ -64,6 +64,8 @@ bower install
 ```
 ### Running the project ###
 
+This project requires least `v0.11.0` version of the Node.  
+
 ```
 npm start
 ```
