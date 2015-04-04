@@ -9,6 +9,11 @@
 // JSX support for React
 require('node-jsx').install({ extension: '.jsx' });
 
+// Config
+var config = require('./config/app');
+var nconf = require('nconf');
+nconf.overrides(config);
+
 var pkg = require('./package.json');
 
 var koa = require('koa');
@@ -22,8 +27,6 @@ var render = require('koa-ejs');
 var thunkify = require('thunkify-wrap');
 var nconf = require('nconf');
 var mongoose = require('mongoose');
-
-var path = require('path');
 
 var Logger = require('./server/module/Logger');
 
@@ -44,19 +47,9 @@ var CLIENT;
  * Configuration
  */
 
-if (process.env.NODE_ENV === 'production') {
-  nconf.file(path.join(__dirname, 'config/prod.json'));
-}
-else if (process.env.NODE_ENV === 'test') {
-  nconf.file(path.join(__dirname, 'config/test.json'));
-}
-else {
-  nconf.file(path.join(__dirname, 'config/dev.json'));
-}
+mongoose.connect(nconf.get('mongo:connect'));
 
-mongoose.connect(process.env.MONGOHQ_URL || nconf.get('mongo:connect'));
-
-PORT = process.env.PORT || nconf.get('port');
+PORT =  nconf.get('port');
 CLIENT = process.env.CLIENT_DIR || BrewUI.getStaticPath();
 
 /**
