@@ -24,7 +24,7 @@ What is this?
 ![Brew scheduler][3]
 
 ![Logs][4]
- 
+
 Used technologies
 -----------------
 
@@ -55,13 +55,10 @@ Install
 
 Installing dependencies from NPM:
 ```
+npm install -g bower
 npm install
 ```
 
-Installing client-side dependencies from Bower:
-```
-bower install
-```
 ### Running the project ###
 
 This project requires least `v0.11.0` version of the Node.  

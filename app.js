@@ -7,23 +7,22 @@
 'use strict';
 
 // JSX support for React
-require('node-jsx').install({ extension: '.jsx' });
+require('node-jsx').install({
+  extension: '.jsx'
+});
 
+var config = require('./config');
 var pkg = require('./package.json');
 
 var koa = require('koa');
 var serve = require('koa-static');
-var router = require('koa-router');
-var etag = require('koa-etag');
+var router = require('koa-router')();
 var body = require('koa-parse-json');
 var cors = require('koa-cors');
 var render = require('koa-ejs');
 
 var thunkify = require('thunkify-wrap');
-var nconf = require('nconf');
 var mongoose = require('mongoose');
-
-var path = require('path');
 
 var Logger = require('./server/module/Logger');
 
@@ -36,35 +35,19 @@ BrewUI.isomorphic();
 var app = koa();
 
 var server;
-var PORT;
-var CLIENT;
-
 
 /**
  * Configuration
  */
 
-if (process.env.NODE_ENV === 'production') {
-  nconf.file(path.join(__dirname, 'config/prod.json'));
-}
-else if (process.env.NODE_ENV === 'test') {
-  nconf.file(path.join(__dirname, 'config/test.json'));
-}
-else {
-  nconf.file(path.join(__dirname, 'config/dev.json'));
-}
-
-mongoose.connect(process.env.MONGOHQ_URL || nconf.get('mongo:connect'));
-
-PORT = process.env.PORT || nconf.get('port');
-CLIENT = process.env.CLIENT_DIR || BrewUI.getStaticPath();
+mongoose.connect(config.mongo.connect);
 
 /**
  * Configuring middleware
  */
 
 render(app, {
-  root: CLIENT,
+  root: config.clientDir,
   layout: 'layout',
   viewExt: 'html'
 });
@@ -72,14 +55,12 @@ render(app, {
 app.use(cors({
   methods: ['GET', 'PUT', 'POST', 'PATCH']
 }));
-require('koa-qs')(app);
-app.use(etag());
 app.use(body());
-app.use(router(app));
+app.use(router.routes());
 
 Logger.init();
 
-app.use(serve(CLIENT));
+app.use(serve(config.clientDir));
 
 
 // Register fetchers
@@ -90,10 +71,11 @@ BrewUI.Fetcher.register('log', require('./server/fetcher/log'));
  * React page middleware
  */
 
-app.use(function *() {
+app.use(function *(next) {
 
   // Is react route?
   if (!routeHelper.isReactRoute(BrewUI.routes, { path: this.path, method: this.method })) {
+    yield next;
     return;
   }
 
@@ -137,19 +119,19 @@ app.use(function *() {
   let brew = require('./server/route/brew');
   let log = require('./server/route/log');
 
-  app.get('/api', function *(next) {
+  router.get('/api', function *(next) {
     yield next;
     this.body = {name: pkg.name, version: pkg.version};
   });
 
-  app.get('/api/brew', brew.get);
-  app.post('/api/brew', brew.create);
-  app.patch('/api/brew/stop', brew.stop);
-  app.patch('/api/brew/pause', brew.pause);
+  router.get('/api/brew', brew.get);
+  router.post('/api/brew', brew.create);
+  router.patch('/api/brew/stop', brew.stop);
+  router.patch('/api/brew/pause', brew.pause);
 
-// logs
-  app.get('/api/brew/log', log.find);
-  app.get('/api/brew/log/:id', log.findOne);
+  // logs
+  router.get('/api/brew/log', log.find);
+  router.get('/api/brew/log/:id', log.findOne);
 }
 
 
@@ -158,11 +140,11 @@ app.use(function *() {
  */
 
 server = require('http').Server(app.callback());
-server.listen(PORT, function () {
-  Logger.info('Server is listening on ' + PORT, 'app', {
+server.listen(config.port, function () {
+  Logger.info('Server is listening on ' + config.port, 'app', {
     name: pkg.name,
     version: pkg.version,
-    env: process.env.NODE_ENV
+    env: config.env
   });
 });
 

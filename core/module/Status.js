@@ -1,5 +1,4 @@
-var FREQUENCY = process.env.STATUS_FREQ ? parseInt(process.env.STATUS_FREQ, 10) : 30000;
-
+var config = require('../../config');
 var brewer = require('../brewer');
 var temperature = require('../temperature');
 var device = require('../device');
@@ -7,7 +6,7 @@ var device = require('../device');
 var Brew = require('../../schema/Brew');
 var Logger = require('../module/Logger');
 var LOG = 'Status';
-
+var FREQUENCY = config.logFrequency;
 var interval;
 
 

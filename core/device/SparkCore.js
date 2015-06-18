@@ -8,10 +8,10 @@
 var events  = require('events');
 var coreEmitter = new events.EventEmitter();
 
-var nconf = require('nconf');
 var request = require('request');
 var spark = require('sparknode');
 
+var config = require('../../config');
 var Logger = require('../module/Logger');
 var LOG = 'SparkCore';
 
@@ -31,8 +31,8 @@ var core1;
  * @method init
  */
 exports.init = function () {
-  var token = nconf.get('spark:token');
-  var device1Id = nconf.get('spark:device1');
+  var token = config.spark.token;
+  var device1Id = config.spark.device1;
 
   core1 = new spark.Core({
     accessToken: token,
@@ -82,8 +82,8 @@ exports.init = function () {
  * @method getTemperature
  */
 exports.getTemperature = function () {
-  var url = CLOUD_URL + nconf.get('spark:device1') +
-    '/temperature?access_token=' + nconf.get('spark:token');
+  var url = CLOUD_URL + config.spark.device1 +
+    '/temperature?access_token=' + config.spark.token;
 
   request(url, function (err, res, body) {
     var temp;
@@ -116,8 +116,8 @@ exports.getTemperature = function () {
  * @method getPWM
  */
 exports.getPWM = function () {
-  var url = CLOUD_URL + nconf.get('spark:device1') +
-    '/pwm?access_token=' + nconf.get('spark:token');
+  var url = CLOUD_URL + config.spark.device1 +
+    '/pwm?access_token=' + config.spark.token;
 
   request(url, function (err, res, body) {
     var pwm;

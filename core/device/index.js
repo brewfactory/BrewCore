@@ -4,13 +4,14 @@
  */
 
 var Logger = require('../module/Logger');
+var config = require('../../config');
 var LOG = 'Device';
 
 var mocked = false;
 var SparkCore;
 var latestPWM;
 
-if (process.env.MOCK && process.env.MOCK.indexOf('spark') > -1) {
+if (config.mock.indexOf('spark') > -1) {
   mocked = true;
   SparkCore = require('./SparkCoreMock');
 } else {
