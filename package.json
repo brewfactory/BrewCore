@@ -23,6 +23,7 @@
   ],
   "license": "MIT",
   "dependencies": {
+    "bower": "^1.6.5",
     "brew-ui": "^1.5.0",
     "co-thunkify": "0.0.1",
     "koa": "^0.21.0",
