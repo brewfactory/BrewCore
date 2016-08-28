@@ -26,7 +26,6 @@ node_modules
 
 .nvmrc
 
-client/bower_components
 .sparkcache.json
 
 config/prod.json

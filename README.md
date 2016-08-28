@@ -49,13 +49,11 @@ Install
 ### Prerequisites ###
 
 * Node.js >= v0.11.0 (install with [NVM](https://github.com/creationix/nvm))
-* Bower (install with: ```npm install -g bower``)
 
 ### Setting up the project ###
 
 Installing dependencies from NPM:
 ```
-npm install -g bower
 npm install
 ```
 
