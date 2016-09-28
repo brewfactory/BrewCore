@@ -6,6 +6,8 @@
 
 'use strict';
 
+require('@risingstack/trace');
+
 // JSX support for React
 require('node-jsx').install({
   extension: '.jsx'
